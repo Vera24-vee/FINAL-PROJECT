@@ -1,0 +1,56 @@
+//- login.pug
+extends layout2
+
+block content
+  .flex-box.large(class="flex justify-center items-center h-full w-full")
+    .wrapper(
+      class="w-[450px] min-h-[500px] p-10 rounded-[15px] text-center bg-[rgba(0,31,63,0.9)] shadow-[0_0_35px_rgba(14,239,255,0.9)]"
+    )
+      //- Login title at the top
+      h1(class="text-[2.5em] text-white mb-8") Login
+
+      p.login-description(class="text-[1.2em] text-cyan-400/80 mb-8 text-left") Please enter your credentials to access the system
+      
+      form#loginForm(class="flex flex-col items-center gap-6" action='/login' method='POST')
+        .form-group(class="w-full relative mb-1")
+          i(data-lucide="mail" class="absolute left-2 top-3 text-cyan-400/80")
+          input#email.form-field.underlined(
+            type='email'
+            name='email'
+            placeholder='Enter your email'
+            class="w-full max-w-[400px] text-[1em] py-2 pl-8 bg-transparent border-0 border-b-2 border-white text-white focus:outline-none focus:border-cyan-400 focus:shadow-[0_2px_10px_rgba(14,239,255,0.6)] transition-all duration-300"
+            
+          )
+          span#emailError(class="hidden text-red-400 text-xs mt-1 absolute right-0 top-full")
+        
+        .form-group(class="w-full relative mb-1")
+          i(data-lucide="lock" class="absolute left-2 top-3 text-cyan-400/80")
+          input#password.form-field.underlined(
+            type='password'
+            name='password'
+            placeholder='Enter your password'
+            class="w-full max-w-[400px] text-[1em] py-2 pl-8 bg-transparent border-0 border-b-2 border-white text-white focus:outline-none focus:border-cyan-400 focus:shadow-[0_2px_10px_rgba(14,239,255,0.6)] transition-all duration-300"
+            
+          )
+          span#passwordError(class="hidden text-red-400 text-xs mt-1 absolute right-0 top-full")
+        
+        //- Login button at the bottom
+        button.btn(
+          type='submit'
+          class="text-[1em] py-2 px-8 mt-4 rounded-[25px] bg-cyan-400 text-white shadow-[0_0_10px_rgba(14,239,255,0.8)] hover:bg-white hover:text-black transition-all duration-300 cursor-pointer flex items-center gap-2"
+        )
+          i(data-lucide="log-in" class="w-5 h-5")
+          | Log In
+
+      //- Return home link at the bottom
+      a(href="/" class="block text-white hover:text-cyan-400 mt-8 transition-colors duration-300 flex items-center justify-center gap-2")
+        i(data-lucide="home" class="w-5 h-5")
+        span Return to Home
+
+  //- Scripts at the bottom
+  script(src="https://unpkg.com/lucide@latest")
+  script.
+    lucide.createIcons(); // Initialize icons
+  script(src="/js/login.js")
+  script.
+    document.title = "Login - KGL";

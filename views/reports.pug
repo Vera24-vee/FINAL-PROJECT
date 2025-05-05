@@ -1,0 +1,64 @@
+extends layout
+
+block content
+  // Fullscreen background with centered layout
+  div(class="min-h-screen flex items-center justify-center bg-[#00122E] p-4")
+
+    // Outer container with smooth corners
+    main(class="w-full max-w-3xl p-8 rounded-3xl shadow-2xl bg-[#0e223f] text-white")
+
+      // Header section
+      header.mb-6.text-center
+        h1.text-3xl.font-bold.text-cyan-400 Director’s Reports
+        p.text-cyan-100.mt-2 Overview across Maganjo and Matugga branches
+
+      // Highlights section
+      section(class="mb-6 p-4 rounded-3xl bg-[#123456] shadow-md")
+        h2.text-xl.font-bold.text-cyan-400.mb-2 Highlights
+        p.text-cyan-100
+          | Sales: 
+          span#total-sales.font-bold.text-white Loading...
+          | UGX | Credit Balance: 
+          span#credit-balance.font-bold.text-white Loading...
+          | UGX | Produce Received: 
+          span#total-produce.font-bold.text-white Loading...
+          | kg | Overdue Accounts: 
+          span#overdue-accounts.font-bold.text-red-400 Loading...
+
+      // Credit Summary section
+      section(class="mb-6 p-4 rounded-3xl bg-[#123456] shadow-md")
+        h2.text-xl.font-bold.text-cyan-400.mb-2 Credit Summary
+        p.text-cyan-100
+          | Credit Balance: 
+          span#credit-balance.font-bold.text-white Loading...
+          | UGX | Overdue Accounts: 
+          span#overdue-accounts.font-bold.text-red-400 Loading...
+
+      // Sales Summary section
+      section(class="mb-6 p-4 rounded-3xl bg-[#123456] shadow-md")
+        h2.text-xl.font-bold.text-cyan-400.mb-2 Sales Summary
+        p.text-cyan-100
+          | Total Sales: 
+          span#total-sales.font-bold.text-white Loading...
+          | UGX | Includes cash and credit sales.
+
+      // Produce Summary section
+      section(class="mb-6 p-4 rounded-3xl bg-[#123456] shadow-md")
+        h2.text-xl.font-bold.text-cyan-400.mb-2 Produce Summary
+        p.text-cyan-100
+          | Produce Received: 
+          span#total-produce.font-bold.text-white Loading...
+          | kg | Ensure proper storage and recording.
+
+      // Date Picker input with smooth corners
+      div.flex.justify-center.mt-8
+        input#reportDate(
+          type="date", 
+          class="px-4 py-2 rounded-3xl border border-cyan-300 text-black focus:ring-2 focus:ring-cyan-500 focus:outline-none"
+        )
+
+  // Load Lucide icons
+  script(src="https://unpkg.com/lucide@latest")
+  script.
+    lucide.createIcons();
+  script(src="/js/reports.js")

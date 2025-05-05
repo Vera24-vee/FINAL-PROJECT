@@ -1,0 +1,83 @@
+extends layout2
+
+block content
+  .flex.h-screen.w-full
+    // Sidebar
+    aside.w-60.text-white.p-8.shadow-lg(class='bg-[#000c1f] shadow-cyan-300/30')
+      h2.text-2xl.text-center.text-cyan-400.mb-8 KGL Manager
+      ul.space-y-4
+        li
+          a.flex.items-center.gap-2.text-white.border-cyan-400.px-2.py-2.rounded-md(href='/signup' class='hover:text-cyan-400 hover:bg-cyan-200/10 hover:border-l-4')
+            i(data-lucide='user-plus')
+            | Add User
+        li
+          a.flex.items-center.gap-2.text-white.border-cyan-400.px-2.py-2.rounded-md(href='/userTable' class='hover:text-cyan-400 hover:bg-cyan-200/10 hover:border-l-4')
+            i(data-lucide='users')
+            | Users Table
+        li
+          a.flex.items-center.gap-2.text-white.border-cyan-400.px-2.py-2.rounded-md(href='/addProduce' class='hover:text-cyan-400 hover:bg-cyan-200/10 hover:border-l-4')
+            i(data-lucide='package')
+            | Procurement
+        li
+          a.flex.items-center.gap-2.text-white.border-cyan-400.px-2.py-2.rounded-md(href='/procurementList' class='hover:text-cyan-400 hover:bg-cyan-200/10 hover:border-l-4')
+            i(data-lucide='layers')
+            | Stock
+        li
+          a.flex.items-center.gap-2.text-white.border-cyan-400.px-2.py-2.rounded-md(href='/addSale' class='hover:text-cyan-400 hover:bg-cyan-200/10 hover:border-l-4')
+            i(data-lucide='bar-chart')
+            | Record Sales
+        li
+          a.flex.items-center.gap-2.text-white.border-cyan-400.px-2.py-2.rounded-md(href='/viewSales' class='hover:text-cyan-400 hover:bg-cyan-200/10 hover:border-l-4')
+            i(data-lucide='clipboard-list')
+            | View Sales
+        li
+          a.flex.items-center.gap-2.text-white.border-cyan-400.px-2.py-2.rounded-md(href='/addCreditor' class='hover:text-cyan-400 hover:bg-cyan-200/10 hover:border-l-4')
+            i(data-lucide='credit-card')
+            | Credit Sales
+        li
+          a.flex.items-center.gap-2.text-white.border-cyan-400.px-2.py-2.rounded-md(href='/viewCredits' class='hover:text-cyan-400 hover:bg-cyan-200/10 hover:border-l-4')
+            i(data-lucide='file-text')
+            | View Credit Sales
+        li
+          a.flex.items-center.gap-2.text-white.border-cyan-400.px-2.py-2.rounded-md(href='/index' class='hover:text-cyan-400 hover:bg-cyan-200/10 hover:border-l-4')
+            i(data-lucide='log-out')
+            | Log Out
+
+    // Main Content
+    main.flex-1.p-8.overflow-y-auto(class='shadow-inner shadow-cyan-300/10')
+      header.mb-6
+        h1.text-3xl.text-cyan-400.font-bold.mb-2
+          | Branch Dashboard: 
+          span.text-white Matugga
+        p.text-cyan-100 Overview of key operational metrics
+
+      // Stat Cards
+      section.grid.grid-cols-1.gap-6(class='sm:grid-cols-2 lg:grid-cols-4')
+        .rounded-xl.p-6.text-center.text-white.shadow-md.transform.transition(class='bg-[#0e223f] shadow-cyan-400/30 hover:shadow-cyan-400/50 hover:-translate-y-1')
+          h3.text-xl.text-cyan-400.mb-1 Total Stock (kg)
+          p#total-stock.text-cyan-100.text-sm Loading...
+        .rounded-xl.p-6.text-center.text-white.shadow-md.transform.transition(class='bg-[#0e223f] shadow-cyan-400/30 hover:shadow-cyan-400/50 hover:-translate-y-1')
+          h3.text-xl.text-cyan-400.mb-1 Total Sales (UGX)
+          p#total-sales.text-cyan-100.text-sm Loading...
+        .rounded-xl.p-6.text-center.text-white.shadow-md.transform.transition(class='bg-[#0e223f] shadow-cyan-400/30 hover:shadow-cyan-400/50 hover:-translate-y-1')
+          h3.text-xl.text-cyan-400.mb-1 Credit Balance
+          p#credit-sales.text-cyan-100.text-sm Loading...
+        .rounded-xl.p-6.text-center.text-white.shadow-md.transform.transition.border-l-4.border-red-500(class='bg-[#0e223f] shadow-cyan-400/30 hover:shadow-cyan-400/50 hover:-translate-y-1')
+          h3.text-xl.text-red-400.mb-1 Low Stock Items
+          p#low-stock-items.text-cyan-100.text-sm Loading...
+
+      // Charts
+      section.grid.grid-cols-1.gap-8.mt-10(class='lg:grid-cols-2')
+        .p-6.rounded-xl.shadow-lg.transition(class='bg-[#0e223f] shadow-cyan-400/30 hover:shadow-cyan-400/50')
+          canvas#salesChart(height='200')
+        .p-6.rounded-xl.shadow-lg.transition(class='bg-[#0e223f] shadow-cyan-400/30 hover:shadow-cyan-400/50')
+          canvas#stockPie(height='200')
+
+  // Load Lucide Icons
+  script(src="https://unpkg.com/lucide@latest")
+  script.
+    lucide.createIcons();
+  script(src="https://cdn.jsdelivr.net/npm/chart.js")
+
+  // Link the correct JavaScript file
+  script(src="/js/manager2.js")

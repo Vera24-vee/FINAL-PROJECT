@@ -1,0 +1,84 @@
+extends layout
+
+block content
+  form#procurementForm(action="/addProduce", method="POST", class="bg-[#001f3f]/90 shadow-lg shadow-cyan-400/40 rounded-2xl w-[92%] max-w-3xl px-4 py-5 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3 text-white text-sm")
+    h1(class="text-xl font-semibold col-span-full text-center mb-1") Procurement Form - #{branch} Branch
+
+    //- Produce Name
+    div
+      label(for="produceName", class="block mb-1") Name of Produce
+      select(name="produceName", id="produceName", class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400")
+        option(disabled selected) Select Produce
+        option Beans
+        option Grain Maize
+        option Cowpeas
+        option G-nuts
+        option Soybeans
+      span#produceNameError.hidden.text-red-400.text-xs
+
+    //- Produce Type
+    div
+      label(for="produceType", class="block mb-1") Type of Produce
+      select(name="produceType", id="produceType", class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400")
+        option(disabled selected) Select Type
+        option Legumes
+        option Cereals
+      span#produceTypeError.hidden.text-red-400.text-xs
+
+    //- Date
+    div
+      label(for="date", class="block mb-1") Date
+      input(type="date", name="date", id="date", class="bg-transparent border-b border-white w-full py-1 text-white focus:outline-none focus:ring-1 focus:ring-cyan-400")
+      span#dateError.hidden.text-red-400.text-xs
+
+    //- Time
+    div
+      label(for="time", class="block mb-1") Time of Produce
+      input(type="time", name="time", id="time", class="bg-transparent border-b border-white w-full py-1 text-white focus:outline-none focus:ring-1 focus:ring-cyan-400")
+      span#timeError.hidden.text-red-400.text-xs
+
+    //- Tonnage
+    div
+      label(for="tonnage", class="block mb-1") Tonnage (kgs)
+      input(type="number", name="tonnage", id="tonnage", class="bg-transparent border-b border-white w-full py-1 focus:outline-none focus:ring-1 focus:ring-cyan-400")
+      span#tonnageError.hidden.text-red-400.text-xs
+
+    //- Unit Price
+    div
+      label(for="cost", class="block mb-1") Unit Price (UGX)
+      input(type="number", name="cost", id="cost", class="bg-transparent border-b border-white w-full py-1 focus:outline-none focus:ring-1 focus:ring-cyan-400")
+      span#costError.hidden.text-red-400.text-xs
+
+    //- Dealer Name
+    div
+      label(for="dealerName", class="block mb-1") Dealer's Name
+      select(name="dealerName", id="dealerName", class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400")
+        option(disabled selected) Select Dealer
+        option Maganjo Farm
+        option Matugga Farm
+        option Jane Agro
+        option GreenWorld Ltd
+        option Ben Produce
+      span#dealerNameError.hidden.text-red-400.text-xs
+
+    //- Branch (Readonly)
+    div
+      label(for="branch", class="block mb-1") Branch Name
+      input(type="text", name="branch", id="branch", value=branch readonly class="bg-transparent border-b border-white w-full py-1 text-white focus:outline-none")
+
+    //- Contact
+    div
+      label(for="contact", class="block mb-1") Dealer Contact
+      input(type="tel", name="contact", id="contact", class="bg-transparent border-b border-white w-full py-1 focus:outline-none focus:ring-1 focus:ring-cyan-400")
+      span#contactError.hidden.text-red-400.text-xs
+
+    //- Selling Price
+    div
+      label(for="salePrice", class="block mb-1") Selling Price (UGX)
+      input(type="number", name="salePrice", id="salePrice", class="bg-transparent border-b border-white w-full py-1 focus:outline-none focus:ring-1 focus:ring-cyan-400")
+      span#salePriceError.hidden.text-red-400.text-xs
+
+    //- Submit Button
+    button(type="submit", class="col-span-full w-1/2 mx-auto mt-2 bg-cyan-400 text-white py-1.5 rounded-full shadow-md hover:bg-cyan-300 hover:text-[#004d73] transition-all duration-300") Submit
+
+  script(src="/js/procure.js")

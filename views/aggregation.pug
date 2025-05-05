@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  h1.text-3xl.font-bold.text-center.text-green-600.mb-8 Aggregated Produce Data
+
+  .grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
+    each item in aggregatedData.fullAggregatedData
+      .bg-gradient-to-br.from-gray-800.to-gray-900.text-white.p-6.rounded-2xl.shadow-md
+        h2.text-xl.font-semibold.mb-4= item.produceName
+        p.mb-2 Total Produce: 
+          span.font-bold.text-green-400 #{item.totalProduce} kg
+        p.mb-2 Total Sales: 
+          span.font-bold.text-blue-400 #{item.totalSales} UGX
+        p Total Credit Due: 
+          span.font-bold.text-red-400 #{item.totalCreditDue} UGX
+
+  h2.text-2xl.font-bold.text-center.text-red-500.mt-12.mb-6 Low Stock Items
+
+  ul.space-y-4
+    each item in aggregatedData.lowStockItems
+      li.bg-red-900.text-white.p-4.rounded-xl.shadow
+        span.font-semibold= item._id
+        | : #{item.totalProduce} kg

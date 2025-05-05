@@ -1,0 +1,92 @@
+extends layout
+
+block content
+  main(class="py-10 w-full px-4 flex flex-col items-center space-y-6")
+    h1(class="text-2xl font-semibold") Procurement Table - #{branch} Branch
+
+    style.
+      @keyframes gradientMotion {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #001f3d; /* Dark Navy Blue Background */
+      }
+      th, td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #444444; /* Softer border color */
+      }
+      th {
+        background-color: #003459; /* Darker shade for header */
+        color: white;
+      }
+      td {
+        background-color: #002737; /* Lighter dark blue for rows */
+        color: white;
+      }
+      .actions-column {
+        text-align: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .action-btn {
+        display: inline-block;
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .update-btn {
+        border-right: 2px solid #444444;
+        padding-right: 16px;
+      }
+
+    div(class="w-full max-w-7xl overflow-x-auto bg-white/5 rounded-2xl shadow-2xl shadow-cyan-400/30 backdrop-blur-md")
+      table(class="min-w-full text-sm text-left")
+        thead
+          tr
+            th(class="px-4 py-3") Produce Name
+            th(class="px-4 py-3") Produce Type
+            th(class="px-4 py-3") Date
+            th(class="px-4 py-3") Time
+            th(class="px-4 py-3") Tonnage (kgs)
+            th(class="px-4 py-3") Cost (UGX)
+            th(class="px-4 py-3") Selling Price (UGX)
+            th(class="px-4 py-3") Dealer Name
+            th(class="px-4 py-3") Contact
+            th(class="px-4 py-3") Branch
+            th(class="px-4 py-3") Actions
+
+        tbody
+          if produces && produces.length
+            each produce in produces
+              tr(class="hover:bg-white/10 transition")
+                td(class="px-4 py-2") #{produce.produceName}
+                td(class="px-4 py-2") #{produce.produceType}
+                td(class="px-4 py-2") #{moment(produce.saleDate).format('DD-MM-YYYY')}
+                td(class="px-4 py-2") #{moment(produce.time, 'HH:mm').format('h:mm A')}
+                td(class="px-4 py-2") #{produce.tonnage}
+                td(class="px-4 py-2") #{produce.cost}
+                td(class="px-4 py-2") #{produce.salePrice}
+                td(class="px-4 py-2") #{produce.dealerName}
+                td(class="px-4 py-2") #{produce.contact}
+                td(class="px-4 py-2") #{produce.branch}
+                td(class="px-4 py-2 actions-column") 
+                  a(href=`/editProduce/${produce._id}`, class="action-btn update-btn text-yellow-400 hover:text-yellow-300 transition duration-200") 
+                    lucide.edit(class="h-5 w-5 inline-block mr-2") Update
+                  form(action=`/deleteProduce/${produce._id}`, method="POST" class="inline-block ml-2")
+                    button(type="submit" class="action-btn text-red-400 hover:text-red-300 transition duration-200") 
+                      lucide.trash(class="h-5 w-5 inline-block mr-2") Delete
+          else
+            tr
+              td(colspan="11" class="text-center py-4") No produce records found.
+
+  script(src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js")
+  script.
+    lucide.createIcons()

@@ -1,0 +1,140 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Roboto', sans-serif;
+  background: #001F3F; /* Navy blue background */
+}
+
+/* Wrapper */
+.wrapper {
+  width: 900px;
+  height: 500px;
+  position: relative;
+  border-radius: 20px;
+  display: flex;
+  overflow: hidden;
+  box-shadow: 0 0 25px rgba(14, 239, 255, 0.8); /* Cyan glow effect */
+}
+
+/* Panels */
+.panel {
+  width: 50%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+
+/* Left Panel (Welcome Section) */
+.description-panel {
+  background: #0EF; /* Cyan blue background */
+  clip-path: polygon(0 0, 96% 0, 70% 100%, 0 100%); /* Creates the diagonal split */
+  padding: 40px 20px;
+}
+
+.description-panel h1 {
+  font-size: 2em;
+  margin-bottom: 15px;
+}
+
+.description-panel p {
+  font-size: 1.2em;
+  line-height: 1.5;
+}
+
+/* Right Panel (Form Section) */
+.form-panel {
+  background: #001F3F; /* Navy blue background */
+  clip-path: polygon(5% 0, 100% 0, 100% 100%, 0 100%); /* Creates the diagonal split */
+  padding: 40px 20px;
+}
+
+.form-panel h1 {
+  font-size: 2em;
+  margin-bottom: 15px;
+}
+
+.form-panel form {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align form elements to the left */
+}
+
+/* Input Fields */
+.form-field {
+  width: 100%;
+  margin: 10px 0;
+  padding: 5px 0;
+  border: none;
+  border-bottom: 2px solid white; /* Underline styling */
+  background: transparent;
+  color: white;
+  outline: none;
+}
+
+.form-field::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Dropdown Styling */
+select.form-field {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid white;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+}
+
+select.form-field option {
+  color: black;
+}
+
+/* Button Styling */
+.btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: 2px solid #0EF;
+  background: rgb(46, 236, 250);
+  color:  white;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background: #0EF;
+  color: black;
+}
+ 
+/* Switch Link Styling */
+.switch-link {
+  margin-top: 20px;
+  font-size: 0.9em;
+}
+
+.toggle-link {
+  color: #0EF;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.toggle-link:hover {
+  color: #0EF;
+}
+ 

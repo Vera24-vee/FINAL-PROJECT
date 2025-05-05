@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KGL Sales Agent Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            gradientMotion: "gradientMotion 15s ease infinite"
+          },
+          keyframes: {
+            gradientMotion: {
+              "0%": { backgroundPosition: "0% 50%" },
+              "50%": { backgroundPosition: "100% 50%" },
+              "100%": { backgroundPosition: "0% 50%" }
+            }
+          },
+          backgroundImage: {
+            'animated-gradient': "linear-gradient(-45deg, #004d73, #007ba7, #ffffff)"
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="text-white font-['Roboto',sans-serif] bg-animated-gradient bg-[length:400%_400%] animate-gradientMotion">
+
+  <div class="flex h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-60 bg-[#000c1f] text-white p-8 shadow-lg shadow-cyan-300/30">
+      <h2 class="text-2xl text-center text-cyan-400 mb-8">KGL Agent</h2>
+      <ul class="space-y-4">
+        <li>
+          <a href="/sales" class="flex items-center gap-2 hover:text-cyan-400 hover:bg-cyan-200/10 hover:border-l-4 border-cyan-400 px-2 py-2 rounded-md">
+            <i data-lucide="shopping-cart"></i> Record Sale
+          </a>
+        </li>
+        <li>
+          <a href="/credit-sales" class="flex items-center gap-2 hover:text-cyan-400 hover:bg-cyan-200/10 hover:border-l-4 border-cyan-400 px-2 py-2 rounded-md">
+            <i data-lucide="credit-card"></i> Credit Sales
+          </a>
+        </li>
+        <li> 
+          <a href="/index" class="flex items-center gap-2 text-red-300 hover:text-red-400 hover:bg-red-200/10 hover:border-l-4 border-red-400 px-2 py-2 rounded-md">
+            <i data-lucide="log-out"></i> Log Out
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 overflow-y-auto">
+      <header class="mb-6">
+        <h1 class="text-3xl text-cyan-400 font-bold mb-2">Sales Agent Dashboard</h1>
+        <p class="text-cyan-100">Branch: <span class="font-semibold text-white">[Dynamic Branch Name]</span></p>
+      </header>
+
+      <!-- Stats -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="bg-[#0e223f] rounded-xl p-6 text-center shadow-md shadow-cyan-400/20 hover:shadow-cyan-400/50">
+          <h3 class="text-xl text-cyan-400 mb-1">Today’s Sales (UGX)</h3>
+          <p id="todays-sales" class="text-cyan-100 text-sm">Loading...</p>
+        </div>
+        <div class="bg-[#0e223f] rounded-xl p-6 text-center shadow-md shadow-cyan-400/20 hover:shadow-cyan-400/50">
+          <h3 class="text-xl text-cyan-400 mb-1">Credit Issued</h3>
+          <p id="credit-issued" class="text-cyan-100 text-sm">Loading...</p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="text-center py-4 text-sm bg-[#000c1f] text-cyan-300 mt-4">
+    © 2025 Karibu Groceries LTD. All rights reserved.
+  </footer>
+
+  <!-- Icon Loader -->
+  <script>
+    lucide.createIcons();
+  </script>
+
+  <!-- External Logic -->
+  <script src="/public/js/salesAgentDash.js"></script>
+</body>
+</html>

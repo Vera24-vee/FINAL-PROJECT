@@ -1,0 +1,98 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(270deg, #004d73, #007ba7, #ffffff);
+    background-size: 400% 400%;
+    animation: gradientMotion 10s ease infinite;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+/* Gradient Animation */
+@keyframes gradientMotion {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Table Container */
+.table-container {
+    width: 100%;
+    max-width: 1200px;
+    text-align: center;
+    background-color: rgba(0, 31, 63, 0.9);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(14, 239, 255, 0.7);
+}
+
+.table-container h1 {
+    margin-bottom: 20px;
+    color: white;
+    font-size: 2em;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse; /* Ensures no gaps between borders */
+    margin: 0 auto;
+    font-size: 1rem;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3); /* Border around the table */
+}
+
+thead th {
+    padding: 8px; /* Adjust padding to create more room */
+    text-align: center;
+    font-size: 0.9rem; /* Reduce font size */
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(14, 239, 255, 0.8);
+    white-space: nowrap; /* Prevent line breaks */
+}
+
+tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+tbody tr:hover {
+    background-color: rgba(14, 239, 255, 0.2);
+}
+
+tbody td {
+    padding: 10px;
+    text-align: center;
+    border: 2px solid rgba(255, 255, 255, 0.3); /* Add borders for intersections */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    table {
+        font-size: 0.8rem;
+    }
+
+    thead th, tbody td {
+        padding: 8px; /* Reduce padding for smaller screens */
+    }
+}

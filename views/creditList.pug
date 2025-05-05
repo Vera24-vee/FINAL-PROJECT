@@ -1,0 +1,97 @@
+extends layout
+
+block content
+
+  main(class="py-10 w-full px-4 flex flex-col items-center space-y-6")
+    h1(class="text-2xl font-semibold") Credit Sales Table - #{branch} Branch
+
+    style.
+      @keyframes gradientMotion {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #001f3d;
+      }
+      th, td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #444444;
+      }
+      th {
+        background-color: #003459;
+        color: white;
+      }
+      td {
+        background-color: #002737;
+        color: white;
+      }
+      .actions-column {
+        text-align: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .action-btn {
+        display: inline-block;
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .update-btn {
+        border-right: 2px solid #444444;
+        padding-right: 16px;
+      }
+
+    div(class="w-full max-w-7xl overflow-x-auto bg-white/5 rounded-2xl shadow-2xl shadow-cyan-400/30 backdrop-blur-md")
+      table(class="min-w-full text-sm text-left")
+        thead
+          tr
+            th(class="px-4 py-3") Buyer's Name
+            th(class="px-4 py-3") National ID (NIN)
+            th(class="px-4 py-3") Location
+            th(class="px-4 py-3") Contact
+            th(class="px-4 py-3") Produce Name
+            th(class="px-4 py-3") Produce Type
+            th(class="px-4 py-3") Tonnage
+            th(class="px-4 py-3") Amount Due (UGX)
+            th(class="px-4 py-3") Seller's Name
+            th(class="px-4 py-3") Branch
+            th(class="px-4 py-3") Dispatch Date
+            th(class="px-4 py-3") Due Date
+            th(class="px-4 py-3") Dispatch Time
+            th(class="px-4 py-3") Actions
+
+        tbody
+          if credits && credits.length
+            each credit in credits
+              tr(class="hover:bg-white/10 transition")
+                td(class="px-4 py-2") #{credit.buyerName}
+                td(class="px-4 py-2") #{credit.nin}
+                td(class="px-4 py-2") #{credit.location}
+                td(class="px-4 py-2") #{credit.contact}
+                td(class="px-4 py-2") #{credit.produceName}
+                td(class="px-4 py-2") #{credit.produceType}
+                td(class="px-4 py-2") #{credit.tonnage}
+                td(class="px-4 py-2") #{credit.amountDue}
+                td(class="px-4 py-2") #{credit.agentName}
+                td(class="px-4 py-2") #{credit.branch}
+                td(class="px-4 py-2") #{credit.dispatchDate ? moment(credit.dispatchDate).format('DD-MM-YYYY') : 'N/A'}
+                td(class="px-4 py-2") #{credit.dueDate ? moment(credit.dueDate).format('DD-MM-YYYY') : 'N/A'}
+                td(class="px-4 py-2") #{credit.dispatchTime ? moment(credit.dispatchTime, 'HH:mm').format('h:mm A') : 'N/A'}
+                td(class="px-4 py-2 actions-column")
+                  a(href=`/editCredit/${credit._id}`, class="action-btn update-btn text-yellow-400 hover:text-yellow-300 transition duration-200")
+                    lucide.edit(class="h-5 w-5 inline-block mr-2") Update
+                  form(action=`/deleteCredit/${credit._id}`, method="POST", class="inline-block ml-2")
+                    button(type="submit", class="action-btn text-red-400 hover:text-red-300 transition duration-200")
+                      lucide.trash(class="h-5 w-5 inline-block mr-2") Delete
+          else
+            tr
+              td(colspan="14" class="text-center py-4") No credit records found.
+
+  script.
+    lucide.createIcons()

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>KGL Credit Sales Form</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    @keyframes gradientMotion {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-r from-[#004d73] via-[#007ba7] to-white bg-[length:400%_400%] animate-[gradientMotion_10s_ease_infinite] flex items-center justify-center font-[Roboto]">
+
+  <form action="/credit-sale" method="POST" class="bg-[#001f3f]/90 shadow-lg shadow-cyan-400/40 rounded-2xl w-[92%] max-w-3xl px-4 py-5 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3 text-white text-sm">
+    <h1 class="text-xl font-semibold col-span-full text-center mb-1">Produce Sold on Credit</h1>
+
+    <div>
+      <label for="buyerName" class="block mb-1">Buyer's Name</label>
+      <input type="text" name="buyerName" id="buyerName" required minlength="2" class="bg-transparent border-b border-white w-full py-1 focus:outline-none focus:ring-1 focus:ring-cyan-400">
+    </div>
+
+    <div>
+      <label for="nin" class="block mb-1">National ID (NIN)</label>
+      <input type="text" name="nin" id="nin" required pattern="^[A-Z0-9]{13}$" placeholder="CF1234567890A" class="bg-transparent border-b border-white w-full py-1 uppercase placeholder-white focus:outline-none focus:ring-1 focus:ring-cyan-400">
+    </div>
+
+    <div>
+      <label for="location" class="block mb-1">Location</label>
+      <input type="text" name="location" id="location" required minlength="2" class="bg-transparent border-b border-white w-full py-1 focus:outline-none focus:ring-1 focus:ring-cyan-400">
+    </div>
+
+    <div>
+      <label for="contact" class="block mb-1">Contact</label>
+      <input type="tel" name="contact" id="contact" required pattern="^(\+256|0)[0-9]{9}$" placeholder="+2567XXXXXXXX" class="bg-transparent border-b border-white w-full py-1 placeholder-white focus:outline-none focus:ring-1 focus:ring-cyan-400">
+    </div>
+
+    <div>
+      <label for="amountDue" class="block mb-1">Amount Due (UGX)</label>
+      <input type="number" name="amountDue" id="amountDue" required minlength="5" placeholder="e.g. 500000" class="bg-transparent border-b border-white w-full py-1 placeholder-white focus:outline-none focus:ring-1 focus:ring-cyan-400">
+    </div>
+
+    <div>
+      <label for="agentName" class="block mb-1">Sales Agent's Name</label>
+      <input type="text" name="agentName" id="agentName" required minlength="2" class="bg-transparent border-b border-white w-full py-1 focus:outline-none focus:ring-1 focus:ring-cyan-400">
+    </div>
+
+    <div>
+      <label for="dueDate" class="block mb-1">Due Date</label>
+      <input type="date" name="dueDate" id="dueDate" required class="bg-transparent border-b border-white w-full py-1 text-white focus:outline-none focus:ring-1 focus:ring-cyan-400">
+    </div>
+
+    <div>
+      <label for="produceName" class="block mb-1">Produce Name</label>
+      <select name="produceName" id="produceName" required class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400">
+        <option disabled selected>Select Produce</option>
+        <option>Beans</option>
+        <option>Grain Maize</option>
+        <option>Cowpeas</option>
+        <option>G-nuts</option>
+        <option>Soybeans</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="produceType" class="block mb-1">Type of Produce</label>
+      <select name="produceType" id="produceType" required class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400">
+        <option disabled selected>Select Type</option>
+        <option>Legumes</option>
+        <option>Cereals</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="tonnage" class="block mb-1">Tonnage (kgs)</label>
+      <input type="number" name="tonnage" id="tonnage" required placeholder="e.g. 1500" class="bg-transparent border-b border-white w-full py-1 placeholder-white focus:outline-none focus:ring-1 focus:ring-cyan-400">
+    </div>
+
+    <div>
+      <label for="dispatc hDate" class="block mb-1">Date of Dispatch</label>
+      <input type="date" name="dispatchDate" id="dispatchDate" required class="bg-transparent border-b border-white w-full py-1 text-white focus:outline-none focus:ring-1 focus:ring-cyan-400">
+    </div>
+
+    <button type="submit" class="col-span-full w-1/2 mx-auto mt-2 bg-cyan-400 text-white py-1.5 rounded-full shadow-md hover:bg-cyan-300 hover:text-[#004d73] transition-all duration-300">
+      Submit
+    </button>
+  </form>
+
+</body>
+</html>

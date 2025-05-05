@@ -1,0 +1,85 @@
+extends layout
+
+block content
+  form#signupForm(
+    action= editing ? `/editUser/${user._id}` : "/signup",
+    method="POST",
+    class="bg-[#001f3f]/90 shadow-lg shadow-cyan-400/40 rounded-2xl w-[92%] max-w-3xl px-4 py-5 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3 text-white text-sm"
+  )
+    h1(class="text-xl font-semibold col-span-full text-center mb-1")= editing ? 'Edit User Info' : 'Register Here'
+
+    div
+      label(for="fname", class="block mb-1") First Name
+      input#fname.form-field(
+        type="text", name="fname", placeholder="Enter your first name", required,
+        value=user ? user.fname : '',
+        class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400"
+      )
+      span#fnameError.hidden.text-red-400.text-xs
+
+    div
+      label(for="lname", class="block mb-1") Last Name
+      input#lname.form-field(
+        type="text", name="lname", placeholder="Enter your last name", required,
+        value=user ? user.lname : '',
+        class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400"
+      )
+      span#lnameError.hidden.text-red-400.text-xs
+
+    div
+      label(for="email", class="block mb-1") Email
+      input#email.form-field(
+        type="email", name="email", placeholder="Enter your email", required,
+        value=user ? user.email : '',
+        class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400"
+      )
+      span#emailError.hidden.text-red-400.text-xs
+
+    div
+      label(for="password", class="block mb-1") Password
+      input#password.form-field(
+        type="password", name="password", placeholder= editing ? "Leave blank to keep current" : "Enter your password",
+        class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400"
+      )
+      span#passwordError.hidden.text-red-400.text-xs
+
+    div
+      label(for="role", class="block mb-1") Role
+      select#role.form-field(
+        name="role", onchange="toggleBranchField(this.value)", required,
+        class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400"
+      )
+        option(value="" disabled selected hidden)= user ? user.role : 'Select Role'
+        option(value="director", selected=user && user.role === 'director') Director
+        option(value="manager", selected=user && user.role === 'manager') Manager
+        option(value="sales-agent", selected=user && user.role === 'sales-agent') Sales Agent
+      span#roleError.hidden.text-red-400.text-xs
+
+    div#branchField(style= user && user.role === 'director' ? 'display: none;' : '')
+      label(for="branch", class="block mb-1") Branch
+      select#branch.form-field(
+        name="branch",
+        class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400"
+      )
+        option(value="" disabled selected hidden)= user ? user.branch : 'Select Branch'
+        option(value="maganjo", selected=user && user.branch === 'maganjo') Maganjo
+        option(value="matugga", selected=user && user.branch === 'matugga') Matugga
+      span#branchError.hidden.text-red-400.text-xs
+
+    button(
+      type="submit",
+      class="col-span-full w-1/2 mx-auto mt-2 bg-cyan-400 text-white py-1.5 rounded-full shadow-md hover:bg-cyan-300 hover:text-[#004d73] transition-all duration-300"
+    )= editing ? 'Update Info' : 'Register'
+
+    if !editing
+      p.switch-link
+        | Already have an account? 
+        a.toggle-link(href="/login") Login
+
+  script.
+    function toggleBranchField(role) {
+      const branchField = document.getElementById('branchField');
+      branchField.style.display = role === 'director' ? 'none' : 'block';
+    }
+
+  script(src="/js/signupValidation.js")

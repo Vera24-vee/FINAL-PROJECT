@@ -1,0 +1,77 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling with Refined Gradient Motion */
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Roboto', sans-serif;
+
+  /* Dynamic Gradient with Balanced Colors */
+  background: linear-gradient(270deg, rgba(0, 31, 63, 0.9), rgba(14, 239, 255, 0.6), rgba(0, 31, 63, 0.8)); /* Smooth blend */
+  background-size: 600% 600%; /* Enhanced motion dynamics */
+  animation: gradientMotion 12s ease infinite; /* Slower and elegant motion */
+}
+
+/* Wrapper Content with Static Navy Blue Background */
+.wrapper {
+  width: 800px; /* Adjusted for golden ratio feel */
+  padding: 40px;
+  border-radius: 25px; /* Subtle rounding for elegance */
+  background-color: #001F3F; /* Deep navy static background */
+  box-shadow: 0 0 50px rgba(14, 239, 255, 0.9); /* Enhanced glow for sophistication */
+  text-align: center;
+}
+
+/* Header Section */
+.header h1 {
+  font-size: 2.8em;
+  color: #0EF; /* Cyan blue for a striking headline */
+  margin-bottom: 20px;
+  letter-spacing: 1px; /* Refined text spacing */
+}
+
+.header p {
+  font-size: 1.4em;
+  line-height: 1.8;
+  color: rgba(14, 239, 255, 0.8); /* Balanced subtext */
+  margin-bottom: 30px;
+}
+
+/* Login Button */
+.login-btn {
+  text-decoration: none;
+  font-size: 1.2em;
+  color: white; /* Button text color */
+  border: 2px solid #0EF;
+  padding: 15px 35px; /* Slightly larger for prominence */
+  border-radius: 25px; /* Consistent roundness */
+  background: #0EF; /* Cyan button background */
+  transition: all 0.3s ease;
+  display: inline-block;
+  box-shadow: 0 0 15px rgba(14, 239, 255, 0.8); /* Subtle glowing button */
+}
+
+.login-btn:hover {
+  background: white; /* Elegant hover effect */
+  color: #001F3F; /* Navy text on hover */
+}
+
+/* Gradient Motion Animation */
+@keyframes gradientMotion {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

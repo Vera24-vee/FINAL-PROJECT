@@ -1,0 +1,86 @@
+extends layout
+
+block content
+  form#saleForm(
+    action= editing ? `/editSale/${sale._id}` : "/addSale",
+    method="POST",
+    class="bg-[#001f3f]/90 shadow-lg shadow-cyan-400/40 rounded-2xl w-[92%] max-w-3xl px-4 py-3 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-white text-sm mx-auto"
+  )
+    h1(class="text-lg font-semibold col-span-full text-center mb-1")= editing ? 'Edit Produce Sale' : 'Produce Sale Form'
+
+    div
+      label(for="productName", class="block mb-1") Name of Produce (optional)
+      select(name="productName", id="productName", class="bg-transparent border-b border-white w-full py-1 text-black")
+        option(disabled selected hidden)= sale ? sale.productName : 'Select Produce'
+        option(value="Beans", selected=sale && sale.productName === 'Beans') Beans
+        option(value="Grain Maize", selected=sale && sale.productName === 'Grain Maize') Grain Maize
+        option(value="Cowpeas", selected=sale && sale.productName === 'Cowpeas') Cowpeas
+        option(value="G-nuts", selected=sale && sale.productName === 'G-nuts') G-nuts
+        option(value="Soybeans", selected=sale && sale.productName === 'Soybeans') Soybeans
+      span#productNameError(class="text-red-400 text-xs hidden")
+
+    div
+      label(for="category", class="block mb-1") Category
+      select(name="category", id="category", class="bg-transparent border-b border-white w-full py-1 text-black")
+        option(disabled selected hidden)= sale ? sale.category : 'Select Category'
+        option(value="Legumes", selected=sale && sale.category === 'Legumes') Legumes
+        option(value="Cereals", selected=sale && sale.category === 'Cereals') Cereals
+      span#categoryError(class="text-red-400 text-xs hidden")
+
+    div
+      label(for="unitPrice", class="block mb-1") Unit Price (UGX)
+      input#unitPrice(type="number", name="unitPrice", step="0.01", min="0", value=sale ? sale.unitPrice : '', class="bg-transparent border-b border-white w-full py-1 focus:outline-none focus:ring-1 focus:ring-cyan-400" readonly)
+      span#unitPriceError(class="text-red-400 text-xs hidden")
+
+    div
+      label(for="tonnage", class="block mb-1") Tonnage (kgs)
+      input#tonnage(type="number", name="tonnage", step="0.01", min="0", value=sale ? sale.tonnage : '', class="bg-transparent border-b border-white w-full py-1 focus:outline-none focus:ring-1 focus:ring-cyan-400")
+      span#tonnageError(class="text-red-400 text-xs hidden")
+
+    div
+      label(for="total", class="block mb-1") Total Cost (UGX)
+      input#total(type="number", name="total", readonly, value=sale ? sale.total : '', class="bg-transparent border-b border-white w-full py-1 focus:outline-none focus:ring-1 focus:ring-cyan-400")
+      span#totalError(class="text-red-400 text-xs hidden")
+
+    div
+      label(for="buyerName", class="block mb-1") Buyer's Name
+      input#buyerName(type="text", name="buyerName", value=sale ? sale.buyerName : '', class="bg-transparent border-b border-white w-full py-1 focus:outline-none focus:ring-1 focus:ring-cyan-400")
+      span#buyerNameError(class="text-red-400 text-xs hidden")
+
+    div
+      label(for="phone", class="block mb-1") Phone
+      input#phone(type="tel", name="phone", value=sale ? sale.phone : '', class="bg-transparent border-b border-white w-full py-1 focus:outline-none focus:ring-1 focus:ring-cyan-400")
+      span#phoneError(class="text-red-400 text-xs hidden")
+
+    div
+      label(for="saleDate", class="block mb-1") Date of Sale
+      input#saleDate(type="date", name="saleDate", value=(sale && sale.saleDate ? sale.saleDate.toISOString().slice(0, 10) : ''), class="bg-transparent border-b border-white w-full py-1 text-white focus:outline-none focus:ring-1 focus:ring-cyan-400")
+      span#saleDateError(class="text-red-400 text-xs hidden")
+
+    div
+      label(for="saleTime", class="block mb-1") Time of Sale
+      input#saleTime(type="time", name="saleTime", value=(sale && sale.saleTime ? new Date(sale.saleTime) : ''), class="bg-transparent border-b border-white w-full py-1 text-white focus:outline-none focus:ring-1 focus:ring-cyan-400")
+      span#saleTimeError(class="text-red-400 text-xs hidden")
+
+    div
+      label(for="paymentMode", class="block mb-1") Mode of Payment
+      select#paymentMode(name="paymentMode", class="bg-transparent border-b border-white w-full py-1 text-black")
+        option(disabled selected hidden)= sale ? sale.paymentMode : 'Select Payment Mode'
+        option(value="Cash", selected=sale && sale.paymentMode === 'Cash') Cash
+        option(value="Mobile Money", selected=sale && sale.paymentMode === 'Mobile Money') Mobile Money
+        option(value="Bank Transfer", selected=sale && sale.paymentMode === 'Bank Transfer') Bank Transfer
+      span#paymentModeError(class="text-red-400 text-xs hidden")
+
+    div
+      label(for="branch", class="block mb-1") Branch
+      input#branch(type="text", name="branch", readonly, value=sale ? sale.branch : branch, class="bg-transparent border-b border-white w-full py-1 text-white focus:outline-none focus:ring-1 focus:ring-cyan-400")
+      span#branchError(class="text-red-400 text-xs hidden")
+
+    div
+      label(for="agentName", class="block mb-1") Agent Name
+      input#agentName(type="text", name="agentName", readonly, value=sale ? sale.agentName : agentName, class="bg-transparent border-b border-white w-full py-1 text-white focus:outline-none focus:ring-1 focus:ring-cyan-400")
+      span#agentNameError(class="text-red-400 text-xs hidden")
+
+    button(type="submit", class="col-span-full mx-auto mt-3 bg-cyan-400 text-white rounded-full shadow-md transition-all duration-300 w-1/2 py-2 hover:bg-cyan-300 hover:text-[#004d73]")= editing ? 'Update Sale' : 'Submit'
+
+  script(src="/js/sale.js")

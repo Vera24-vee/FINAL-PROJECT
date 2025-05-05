@@ -1,0 +1,78 @@
+extends layout
+
+block content
+  main(class="py-10 w-full px-4 flex flex-col items-center space-y-6")
+    h1(class="text-2xl font-semibold") Registered Users
+
+    style.
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #001f3d;
+      }
+      th, td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #444444;
+      }
+      th {
+        background-color: #003459;
+        color: white;
+      }
+      td {
+        background-color: #002737;
+        color: white;
+      }
+      .actions-column {
+        text-align: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .action-btn {
+        display: inline-block;
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .update-btn {
+        border-right: 2px solid #444444;
+        padding-right: 16px;
+      }
+
+    div(class="w-full max-w-7xl overflow-x-auto bg-white/5 rounded-2xl shadow-2xl shadow-cyan-400/30 backdrop-blur-md")
+      table(class="min-w-full text-sm text-left")
+        thead
+          tr
+            th(class="px-4 py-3") First Name
+            th(class="px-4 py-3") Last Name
+            th(class="px-4 py-3") Email
+            th(class="px-4 py-3") Phone
+            th(class="px-4 py-3") Role
+            th(class="px-4 py-3") Branch
+            th(class="px-4 py-3") Actions
+
+        tbody
+          if users && users.length
+            each user in users
+              tr(class="hover:bg-white/10 transition")
+                td(class="px-4 py-2") #{user.fname}
+                td(class="px-4 py-2") #{user.lname}
+                td(class="px-4 py-2") #{user.email}
+                td(class="px-4 py-2") #{user.phone}
+                td(class="px-4 py-2 capitalize") #{user.role}
+                td(class="px-4 py-2 capitalize") #{user.branch || 'N/A'}
+                td(class="px-4 py-2 actions-column")
+                  a(href=`/editUser/${user._id}`, class="action-btn update-btn text-yellow-400 hover:text-yellow-300 transition duration-200")
+                    lucide.edit(class="h-5 w-5 inline-block mr-2") Edit
+                  form(action=`/deleteUser/${user._id}`, method="POST", class="inline-block ml-2")
+                    button(type="submit", class="action-btn text-red-400 hover:text-red-300 transition duration-200")
+                      lucide.trash(class="h-5 w-5 inline-block mr-2") Delete
+          else
+            tr
+              td(colspan="7" class="text-center py-4") No user records found.
+
+  script.
+    lucide.createIcons()
+                     

@@ -1,0 +1,80 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Procurement List
+    script(src="https://cdn.tailwindcss.com")
+    link(href="https://fonts.googleapis.com/css2?family=Roboto&display=swap", rel="stylesheet")
+    script(src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js")
+    style.
+      @keyframes gradientMotion {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      .gradient-background {
+        background: linear-gradient(45deg, #004d73, #007ba7, white);
+        background-size: 400% 400%;
+        animation: gradientMotion 20s ease infinite;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #004d73;
+        color: white;
+      }
+
+  body(class="min-h-screen gradient-background font-[Roboto] text-white")
+    main(class="py-10 w-full px-4 flex flex-col items-center space-y-6")
+      h1(class="text-2xl font-semibold") Procurement Table - #{branch} Branch
+
+      div(class="w-full max-w-7xl overflow-x-auto bg-white/5 rounded-2xl shadow-2xl shadow-cyan-400/30 backdrop-blur-md")
+        table(class="min-w-full text-sm text-left")
+          thead
+            tr
+              th(class="px-4 py-3") Produce Name
+              th(class="px-4 py-3") Produce Type
+              th(class="px-4 py-3") Date
+              th(class="px-4 py-3") Time
+              th(class="px-4 py-3") Tonnage (kgs)
+              th(class="px-4 py-3") Cost (UGX)
+              th(class="px-4 py-3") Selling Price (UGX)
+              th(class="px-4 py-3") Dealer Name
+              th(class="px-4 py-3") Contact
+              th(class="px-4 py-3") Branch
+              th(class="px-4 py-3" colspan="2") Actions
+
+          tbody
+            if records && records.length
+              each produce in records
+                tr(class="hover:bg-white/10 transition")
+                  td(class="px-4 py-2") #{produce.produceName}
+                  td(class="px-4 py-2") #{produce.produceType}
+                  td(class="px-4 py-2") #{moment(produce.saleDate).format('DD-MM-YYYY')}
+                  td(class="px-4 py-2") #{moment(produce.time, 'HH:mm').format('h:mm A')}
+                  td(class="px-4 py-2") #{produce.tonnage}
+                  td(class="px-4 py-2") #{produce.cost}
+                  td(class="px-4 py-2") #{produce.salePrice}
+                  td(class="px-4 py-2") #{produce.dealerName}
+                  td(class="px-4 py-2") #{produce.contact}
+                  td(class="px-4 py-2") #{produce.branch}
+                  td(class="px-4 py-2")
+                    a(href=`/editProduce/${produce._id}`, class="text-yellow-400 hover:text-yellow-300 transition") Update
+                  td(class="px-4 py-2")
+                    form(action=`/deleteProduce/${produce._id}`, method="POST")
+                      button(type="submit", class="text-red-400 hover:text-red-300 transition") Delete
+            else
+              tr
+                td(colspan="12" class="text-center py-4") No produce records found.
+
+    script.
+      lucide.createIcons()

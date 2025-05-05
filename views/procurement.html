@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>KGL Procurement Form</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    @keyframes gradientMotion {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-r from-[#004d73] via-[#007ba7] to-white bg-[length:400%_400%] animate-[gradientMotion_10s_ease_infinite] flex items-center justify-center font-[Roboto]">
+
+  <form action="/procure" method="POST" id="procurementForm" class="bg-[#001f3f]/90 shadow-lg shadow-cyan-400/40 rounded-2xl w-[92%] max-w-3xl px-4 py-5 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3 text-white text-sm">
+    <h1 class="text-xl font-semibold col-span-full text-center mb-1">Procurement Form</h1>
+
+    <div>
+      <label for="produceName" class="block mb-1">Name of Produce</label>
+      <select name="produceName" id="produceName" required class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400">
+        <option disabled selected>Select Produce</option>
+        <option>Beans</option>
+        <option>Grain Maize</option>
+        <option>Cowpeas</option>
+        <option>G-nuts</option>
+        <option>Soybeans</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="produceType" class="block mb-1">Type of Produce</label>
+      <select name="produceType" id="produceType" required class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400">
+        <option disabled selected>Select Type</option>
+        <option>Legumes</option>
+        <option>Cereals</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="date" class="block mb-1">Date</label>
+      <input type="date" name="date" id="date" required class="bg-transparent border-b border-white w-full py-1 text-white focus:outline-none focus:ring-1 focus:ring-cyan-400">
+    </div>
+
+    <div>
+      <label for="time" class="block mb-1">Time of Produce</label>
+      <input type="time" name="time" id="time" required class="bg-transparent border-b border-white w-full py-1 text-white focus:outline-none focus:ring-1 focus:ring-cyan-400">
+    </div>
+
+    <div>
+      <label for="tonnage" class="block mb-1">Tonnage (kgs)</label>
+      <input type="number" name="tonnage" id="tonnage" min="1000" required placeholder="Minimum 1000kg" class="bg-transparent border-b border-white w-full py-1 placeholder-white focus:outline-none focus:ring-1 focus:ring-cyan-400">
+    </div>
+
+    <div>
+      <label for="cost" class="block mb-1">Cost (UGX)</label>
+      <input type="number" name="cost" id="cost" min="10000" required placeholder="e.g. 500000" class="bg-transparent border-b border-white w-full py-1 placeholder-white focus:outline-none focus:ring-1 focus:ring-cyan-400">
+    </div>
+
+    <div>
+      <label for="dealerName" class="block mb-1">Dealer's Name</label>
+      <select name="dealerName" id="dealerName" required class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400">
+        <option disabled selected>Select Dealer</option>
+        <option>Maganje Farm</option>
+        <option>Matugga Farm</option>
+        <option>Jane Agro</option>
+        <option>GreenWorld Ltd</option>
+        <option>Ben Produce</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="branch" class="block mb-1">Branch Name</label>
+      <input type="text" name="branch" id="branch" value="Matugga" readonly class="bg-transparent border-b border-white w-full py-1 text-white focus:outline-none">
+    </div>
+
+    <div>
+      <label for="contact" class="block mb-1">Dealer Contact</label>
+      <input type="tel" name="contact" id="contact" placeholder="+2567XXXXXXXX" pattern="^(\+256|0)[0-9]{9}$" required class="bg-transparent border-b border-white w-full py-1 placeholder-white focus:outline-none focus:ring-1 focus:ring-cyan-400">
+    </div>
+
+    <div>
+      <label for="salePrice" class="block mb-1">Selling Price (UGX)</label>
+      <input type="number" name="salePrice" id="salePrice" min="10000" required placeholder="e.g. 600000" class="bg-transparent border-b border-white w-full py-1 placeholder-white focus:outline-none focus:ring-1 focus:ring-cyan-400">
+    </div>
+
+    <button type="submit" class="col-span-full w-1/2 mx-auto mt-2 bg-cyan-400 text-white py-1.5 rounded-full shadow-md hover:bg-cyan-300 hover:text-[#004d73] transition-all duration-300">
+      Submit
+    </button>
+  </form>
+
+</body>
+</html>

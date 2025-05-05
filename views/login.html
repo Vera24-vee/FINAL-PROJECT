@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="/public/css/shared.css">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Login Header -->
+        <header class="login-header">
+            <h1>Login</h1>
+            <p>Please enter your credentials to access the system.</p>
+        </header>
+        
+        <!-- Login Form -->
+        <form action="/login" method="POST" class="form-panel">
+            <label for="email"></label>
+            <input type="email" id="email" name="email" class="form-field underlined" placeholder="Enter your email">
+
+            <label for="password"></label>
+            <input type="password" id="password" name="password" class="form-field underlined" placeholder="Enter your password">
+
+            <button type="submit" class="btn">Log In</button>
+        </form>
+
+        <!-- Footer Link -->
+        <p class="switch-link">Don't have an account? <a href="/views/signup.html" class="toggle-link">Sign up here</a>.</p>
+    </div>
+</body>
+</html>

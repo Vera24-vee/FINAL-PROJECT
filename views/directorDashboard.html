@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KGL Director Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            gradientMotion: "gradientMotion 15s ease infinite"
+          },
+          keyframes: {
+            gradientMotion: {
+              "0%": { backgroundPosition: "0% 50%" },
+              "50%": { backgroundPosition: "100% 50%" },
+              "100%": { backgroundPosition: "0% 50%" },
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="text-white font-['Roboto',sans-serif] bg-gradient-to-tr from-[#001F3F] via-[#003366] to-[#0EF] bg-[length:600%_600%] animate-gradientMotion">
+
+  <div class="flex h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#000c1f] text-white p-8 shadow-lg shadow-cyan-300/30">
+      <h2 class="text-2xl text-center text-cyan-400 mb-8">KGL Director</h2>
+      <ul class="space-y-4">
+        <li><a href="/directorDash" class="flex items-center gap-2 hover:text-cyan-400 hover:bg-cyan-200/10 hover:border-l-4 border-cyan-400 px-2 py-2 rounded-md"><i data-lucide="layout-dashboard"></i> Overview</a></li>
+        <li><a href="/reports" class="flex items-center gap-2 hover:text-cyan-400 hover:bg-cyan-200/10 hover:border-l-4 border-cyan-400 px-2 py-2 rounded-md"><i data-lucide="file-bar-chart"></i> Reports</a></li>
+        <li><a href="/branches" class="flex items-center gap-2 hover:text-cyan-400 hover:bg-cyan-200/10 hover:border-l-4 border-cyan-400 px-2 py-2 rounded-md"><i data-lucide="map-pin"></i> Branches</a></li>
+        <li><a href="/index" class="flex items-center gap-2 text-red-300 hover:text-red-400 hover:bg-red-200/10 hover:border-l-4 border-red-400 px-2 py-2 rounded-md"><i data-lucide="log-out"></i> Log Out</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 overflow-y-auto">
+      <header class="mb-6">
+        <h1 class="text-3xl text-cyan-400 font-bold mb-2">Director Dashboard</h1>
+        <p class="text-cyan-100">Aggregated insights across all branches</p>
+      </header>
+
+      <!-- Stat Cards -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-[#0e223f] rounded-xl p-6 text-center shadow-md shadow-cyan-400/20 hover:shadow-cyan-400/50">
+          <h3 class="text-xl text-cyan-400 mb-1">Total Stock (kg)</h3>
+          <p id="total-stock" class="text-cyan-100 text-sm">Loading...</p>
+        </div>
+        <div class="bg-[#0e223f] rounded-xl p-6 text-center shadow-md shadow-cyan-400/20 hover:shadow-cyan-400/50">
+          <h3 class="text-xl text-cyan-400 mb-1">Today's Sales (UGX)</h3>
+          <p id="todays-sales" class="text-cyan-100 text-sm">Loading...</p>
+        </div>
+        <div class="bg-[#0e223f] rounded-xl p-6 text-center shadow-md shadow-cyan-400/20 hover:shadow-cyan-400/50">
+          <h3 class="text-xl text-cyan-400 mb-1">Total Credit (UGX)</h3>
+          <p id="total-credit" class="text-cyan-100 text-sm">Loading...</p>
+        </div>
+        <div class="bg-[#0e223f] rounded-xl p-6 text-center shadow-md border-l-4 border-red-500 shadow-cyan-400/20 hover:shadow-cyan-400/50">
+          <h3 class="text-xl text-red-400 mb-1">Low Stock Alerts</h3>
+          <p id="low-stock-alerts" class="text-cyan-100 text-sm">Loading...</p>
+        </div>
+      </section>
+
+      <!-- Charts -->
+      <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10">
+        <div class="bg-[#0e223f] p-6 rounded-xl shadow-lg shadow-cyan-400/20 hover:shadow-cyan-400/40 transition">
+          <h4 class="text-cyan-300 mb-4 text-lg font-semibold">Sales Trends</h4>
+          <canvas id="salesTrendChart" height="200"></canvas>
+        </div>
+        <div class="bg-[#0e223f] p-6 rounded-xl shadow-lg shadow-cyan-400/20 hover:shadow-cyan-400/40 transition">
+          <h4 class="text-cyan-300 mb-4 text-lg font-semibold">Stock Distribution</h4>
+          <canvas id="stockPieChart" height="200"></canvas>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center py-4 text-sm bg-[#000c1f] text-cyan-300 mt-4">
+    © 2025 Karibu Groceries LTD. All rights reserved.
+  </footer>
+
+  <!-- Icons & Scripts -->
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="/public/js/directorDashboard.js"></script>
+</body>
+</html>

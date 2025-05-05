@@ -1,0 +1,90 @@
+extends layout
+
+block content
+  form#creditForm(
+    action= editing ? `/editCredit/${credit._id}` : "/addCreditor",
+    method="POST",
+    class="bg-[#001f3f]/90 shadow-lg shadow-cyan-400/40 rounded-2xl w-[92%] max-w-3xl px-4 py-3 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-white text-sm mx-auto"
+  )
+    h1(class="text-lg font-semibold col-span-full text-center mb-1")= editing ? 'Edit Credit Sale' : 'Produce Sold on Credit'
+
+    div
+      label(for="buyerName", class="block mb-1") Buyer's Name
+      input(type="text", name="buyerName", id="buyerName", value=credit ? credit.buyerName : '', class="bg-transparent border-b border-white w-full py-1")
+      span#buyerNameError.hidden.text-red-400.text-xs
+
+    div
+      label(for="nin", class="block mb-1") National ID (NIN)
+      input(type="text", name="nin", id="nin", value=credit ? credit.nin : '', class="uppercase bg-transparent border-b border-white w-full py-1")
+      span#ninError.hidden.text-red-400.text-xs
+
+    div
+      label(for="location", class="block mb-1") Location
+      input(type="text", name="location", id="location", value=credit ? credit.location : '', class="bg-transparent border-b border-white w-full py-1")
+      span#locationError.hidden.text-red-400.text-xs
+
+    div
+      label(for="contact", class="block mb-1") Contact
+      input(type="tel", name="contact", id="contact", value=credit ? credit.contact : '', class="bg-transparent border-b border-white w-full py-1")
+      span#contactError.hidden.text-red-400.text-xs
+
+    div
+      label(for="produceName", class="block mb-1") Name of Produce
+      select(name="produceName", id="produceName", class="bg-transparent border-b border-white w-full py-1 text-black")
+        option(disabled selected hidden)= credit ? credit.produceName : 'Select Produce'
+        option(value="Beans", selected=credit && credit.produceName === 'Beans') Beans
+        option(value="Grain Maize", selected=credit && credit.produceName === 'Grain Maize') Grain Maize
+        option(value="Cowpeas", selected=credit && credit.produceName === 'Cowpeas') Cowpeas
+        option(value="G-nuts", selected=credit && credit.produceName === 'G-nuts') G-nuts
+        option(value="Soybeans", selected=credit && credit.produceName === 'Soybeans') Soybeans
+
+    div
+      label(for="produceType", class="block mb-1") Type of Produce
+      select(name="produceType", id="produceType", class="bg-transparent border-b border-white w-full py-1 text-black")
+        option(disabled selected hidden)= credit ? credit.produceType : 'Select Type'
+        option(value="Legumes", selected=credit && credit.produceType === 'Legumes') Legumes
+        option(value="Cereals", selected=credit && credit.produceType === 'Cereals') Cereals
+      span#produceTypeError.hidden.text-red-400.text-xs
+
+    div
+      label(for="tonnage", class="block mb-1") Tonnage (kg)
+      input(type="number", name="tonnage", id="tonnage", value=credit ? credit.tonnage : '', class="bg-transparent border-b border-white w-full py-1")
+      span#tonnageError.hidden.text-red-400.text-xs
+
+    div
+      label(for="unitPrice", class="block mb-1") Unit Cost (UGX)
+      input(type="number", name="unitPrice", id="unitPrice", value=credit ? credit.unitPrice : '', class="bg-transparent border-b border-white w-full py-1")
+      span#unitPriceError.hidden.text-red-400.text-xs
+
+    div
+      label(for="amountDue", class="block mb-1") Amount Due (UGX)
+      input(type="number", name="amountDue", id="amountDue", value=credit ? credit.amountDue : '', readonly, class="bg-transparent border-b border-white w-full py-1")
+      span#amountDueError.hidden.text-red-400.text-xs
+
+    div
+      label(for="agentName", class="block mb-1") Seller's Name
+      input(type="text", name="agentName", id="agentName", value=credit ? credit.agentName : agentName, readonly, class="bg-transparent border-b border-white w-full py-1")
+      span#agentNameError.hidden.text-red-400.text-xs
+
+    div
+      label(for="branch", class="block mb-1") Branch
+      input(type="text", name="branch", id="branch", value=branch, readonly, class="bg-transparent border-b border-white w-full py-1 text-white")
+
+    div
+      label(for="dueDate", class="block mb-1") Due Date
+      input(type="date", name="dueDate", id="dueDate", value=credit ? credit.dueDate.toISOString().split('T')[0] : '', class="bg-transparent border-b border-white w-full py-1")
+      span#dueDateError.hidden.text-red-400.text-xs
+
+    div
+      label(for="dispatchDate", class="block mb-1") Dispatch Date
+      input(type="date", name="dispatchDate", id="dispatchDate", value=credit ? credit.dispatchDate.toISOString().split('T')[0] : '', class="bg-transparent border-b border-white w-full py-1")
+      span#dispatchDateError.hidden.text-red-400.text-xs
+
+    div
+      label(for="dispatchTime", class="block mb-1") Dispatch Time
+      input(type="time", name="dispatchTime", id="dispatchTime", value=credit ? credit.dispatchTime : '', class="bg-transparent border-b border-white w-full py-1")
+      span#dispatchTimeError.hidden.text-red-400.text-xs
+
+    button(type="submit", class="col-span-full w-1/2 mx-auto mt-2 bg-cyan-400 text-white py-1 rounded-full shadow-md hover:bg-cyan-300 hover:text-[#004d73] transition-all duration-300")= editing ? 'Update Credit' : 'Submit'
+
+  script(src="/js/credit.js?v=6")
