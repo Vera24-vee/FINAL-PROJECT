@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Update Total Stock
       if (Array.isArray(data.totalStock) && data.totalStock.length > 0) {
         const stockList = data.totalStock
-          .map(item => `<li>${item._id}: ${item.totalStock} kg</li>`)
+          .map(item => `<li>${item._id}: ${item.totalAddedStock} kg</li>`)
           .join('');
         document.getElementById('total-stock').innerHTML = `<ul style="list-style-type: disc; text-align: left; padding-left: 20px;">${stockList}</ul>`;
       } else {

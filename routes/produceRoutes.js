@@ -74,6 +74,7 @@ router.get('/editProduce/:id', connectEnsureLogin.ensureLoggedIn(), async (req, 
       branch: produce.branch, 
       produce, 
       formAction: `/editProduce/${produce._id}`,
+      editing: true,
       success: null
     });
   } catch (err) {
@@ -85,7 +86,7 @@ router.get('/editProduce/:id', connectEnsureLogin.ensureLoggedIn(), async (req, 
 // Update Produce (Only Managers can update produce)
 router.post('/editProduce/:id', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
   if (req.session.user.role !== 'manager') {
-    return res.redirect('/'); // Redirect if user is not a manager
+    return res.redirect('/');
   }
 
   try {

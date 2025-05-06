@@ -14,15 +14,12 @@ html(lang="en")
 
   body(class="min-h-screen bg-gradient-to-r from-[#004d73] via-[#007ba7] to-white bg-[length:400%_400%] animate-[gradientMotion_10s_ease_infinite] flex flex-col font-[Roboto]")
 
-    //- Define role and branch safely from session
     - const role = typeof session !== 'undefined' && session.user ? session.user.role.toLowerCase() : '';
     - const branch = typeof session !== 'undefined' && session.user ? session.user.branch.toLowerCase() : '';
 
-    //- Header (No Links)
     header(class="bg-[#001f3f] text-white flex justify-center items-center px-6 py-3 shadow-md")
       h1(class="text-lg font-semibold") Karibu Groceries Ltd
 
-    //- Main Content Area
     main(class="flex-1 px-2 py-4 w-full flex justify-center items-center") 
       block content
 

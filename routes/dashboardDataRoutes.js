@@ -9,10 +9,10 @@ router.get('/dashboardData', async (req, res) => {
       return res.status(401).json({ message: 'Unauthorized: User not authenticated.' });
     }
 
-    const { role, branch } = req.user; // Extract role and branch from authenticated user
-    const branchFilter = role === 'director' ? null : branch; // Directors see all branches
+    const { role, branch } = req.user;
+    const branchFilter = role === 'director' ? null : branch;
 
-    console.log(`User Role: ${role}, Branch: ${branchFilter}`); // Debugging
+    console.log(`User Role: ${role}, Branch: ${branchFilter}`); 
 
     const filteredData = await fetchAllData(branchFilter);
 

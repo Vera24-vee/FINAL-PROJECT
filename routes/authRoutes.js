@@ -213,17 +213,26 @@ router.get("/logout", (req, res) => {
     });
   }
 });
-
 router.get("/userTable", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-    // const branch = getUserBranch(req);
+  const currentUser = req.session.user;
+  const branch = currentUser.branch;
+  const role = currentUser.role;
 
-    try {
-        const users = await Signup.find({  })
-        res.render("usersList", { users  });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Error fetching users entries");
+  try {
+    let users;
+    if (role.toLowerCase() === "director") {
+      users = await Signup.find({});
+    } else {
+      users = await Signup.find({ branch });
     }
+
+    res.render("usersList", { users });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching users entries");
+  }
 });
+
+
 
 module.exports = router;

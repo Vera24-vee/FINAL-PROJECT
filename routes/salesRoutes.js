@@ -43,8 +43,20 @@ router.post("/addSale", connectEnsureLogin.ensureLoggedIn(), async (req, res) =>
           branch,
       });
 
-      console.log("Saving sale entry:", sale);
+      // Get the product details
+      const produce = await Produce.findOne({ produceName: req.body.productName, branch });
 
+      if (produce) {
+          // Adjust stock after sale is made
+          if (produce.tonnage >= req.body.tonnage) {
+              produce.tonnage -= req.body.tonnage;
+              await produce.save();
+          } else {
+              return res.status(400).send('Insufficient stock for this sale.');
+          }
+      }
+
+      console.log("Saving sale entry:", sale);
       await sale.save();
       res.redirect("/addSale?success=1");
 
@@ -55,7 +67,6 @@ router.post("/addSale", connectEnsureLogin.ensureLoggedIn(), async (req, res) =>
       });
   }
 });
-
 
 // View cash sales entries for the user's branch
 router.get("/viewSales", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
@@ -96,12 +107,28 @@ router.post("/editSale/:id", connectEnsureLogin.ensureLoggedIn(), async (req, re
         return res.redirect("/");
     }
 
-    console.log("POST /editSale/:id data:", req.body); 
     try {
+        const oldSale = await Sale.findById(req.params.id);
+
+        if (!oldSale) return res.redirect("/viewSales");
+
+        // Update produce stock: Restore old tonnage, then subtract the new tonnage
+        const produce = await Produce.findOne({ produceName: req.body.productName, branch: oldSale.branch });
+
+        if (produce) {
+            // Restore old tonnage first
+            produce.tonnage += oldSale.tonnage;
+            // Adjust for new tonnage after the update
+            produce.tonnage -= req.body.tonnage;
+            await produce.save();
+        }
+
+        // Update sale entry
         await Sale.findByIdAndUpdate(req.params.id, req.body);
         res.redirect("/viewSales");
+
     } catch (error) {
-        console.error(error);
+        console.error("Error updating sale entry:", error);
         res.status(500).send("Error updating sale entry");
     }
 });
@@ -113,10 +140,23 @@ router.post("/deleteSale/:id", connectEnsureLogin.ensureLoggedIn(), async (req, 
     }
 
     try {
+        const sale = await Sale.findById(req.params.id);
+        if (!sale) return res.redirect("/viewSales");
+
+        // Get the produce to restore stock
+        const produce = await Produce.findOne({ produceName: sale.productName, branch: sale.branch });
+
+        if (produce) {
+            // Restore the tonnage that was used in the deleted sale
+            produce.tonnage += sale.tonnage;
+            await produce.save();
+        }
+
         await Sale.findByIdAndDelete(req.params.id);
         res.redirect("/viewSales");
+
     } catch (error) {
-        console.error(error);
+        console.error("Error deleting sale entry:", error);
         res.status(500).send("Error deleting sale entry");
     }
 });

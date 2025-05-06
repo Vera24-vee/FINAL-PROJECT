@@ -4,7 +4,6 @@ const router = express.Router();
 router.get("/dashboard", (req, res) => {
   const { user } = req.session;
 
-  // If the user is not logged in, redirect them to login
   if (!user) return res.redirect("/login");
 
   // Ensure the user has both role and branch before proceeding
@@ -24,7 +23,7 @@ router.get("/dashboard", (req, res) => {
     return res.status(400).send("Branch missing for user");
   }
 
-  const branch = user.branch.toLowerCase();  // Safe to call toLowerCase now
+  const branch = user.branch.toLowerCase(); 
 
   // Redirect manager or sales-agent to their respective dashboard based on branch
   if (role === "manager") {

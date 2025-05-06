@@ -49,11 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('sales-by-branch').textContent = 'No data available';
       }
 
-      // Update Stock by Branch
+      // Update Stock by Branch (corrected to use totalAddedStock)
       if (Array.isArray(data.totalStock) && data.totalStock.length > 0) {
         const stockByBranch = data.totalStock.reduce((acc, item) => {
           acc[item.branch] = acc[item.branch] || [];
-          acc[item.branch].push(`${item._id}: ${item.totalStock} kg`);
+          acc[item.branch].push(`${item._id}: ${item.totalAddedStock} kg`);
           return acc;
         }, {});
         updateList('stock-by-branch', stockByBranch);
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('branchSalesChart').textContent = 'No sales trend data available';
       }
 
-      // Draw Stock Distribution Chart
+      // Draw Stock Distribution Chart (corrected to use totalAddedStock)
       if (Array.isArray(data.totalStock) && data.totalStock.length > 0) {
         drawStockOverviewChart(data.totalStock);
       } else {
@@ -118,8 +118,8 @@ function updateList(elementId, data, prefix = '') {
 
 // Function to draw the Sales Trend Chart
 function drawSalesTrendChart(salesData) {
-  const labels = salesData.map(item => `${item._id} (${item.branch})`); // Product names
-  const values = salesData.map(item => item.totalSales); // Sales amounts
+  const labels = salesData.map(item => `${item._id} (${item.branch})`);
+  const values = salesData.map(item => item.totalSales);
 
   const ctx = document.getElementById('branchSalesChart').getContext('2d');
   new Chart(ctx, {
@@ -143,10 +143,10 @@ function drawSalesTrendChart(salesData) {
   });
 }
 
-// Function to draw the Stock Overview Chart
+// Function to draw the Stock Overview Chart (corrected to use totalAddedStock)
 function drawStockOverviewChart(stockData) {
-  const labels = stockData.map(item => `${item._id} (${item.branch})`); // Product names
-  const values = stockData.map(item => item.totalStock); // Stock quantities
+  const labels = stockData.map(item => `${item._id} (${item.branch})`);
+  const values = stockData.map(item => item.totalAddedStock);
 
   const ctx = document.getElementById('overallStockChart').getContext('2d');
   new Chart(ctx, {

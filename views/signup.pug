@@ -11,7 +11,7 @@ block content
     div
       label(for="fname", class="block mb-1") First Name
       input#fname.form-field(
-        type="text", name="fname", placeholder="Enter your first name", required,
+        type="text", name="fname", placeholder="Enter your first name",
         value=user ? user.fname : '',
         class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400"
       )
@@ -20,7 +20,7 @@ block content
     div
       label(for="lname", class="block mb-1") Last Name
       input#lname.form-field(
-        type="text", name="lname", placeholder="Enter your last name", required,
+        type="text", name="lname", placeholder="Enter your last name",
         value=user ? user.lname : '',
         class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400"
       )
@@ -29,7 +29,7 @@ block content
     div
       label(for="email", class="block mb-1") Email
       input#email.form-field(
-        type="email", name="email", placeholder="Enter your email", required,
+        type="email", name="email", placeholder="Enter your email",
         value=user ? user.email : '',
         class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400"
       )
@@ -46,7 +46,7 @@ block content
     div
       label(for="role", class="block mb-1") Role
       select#role.form-field(
-        name="role", onchange="toggleBranchField(this.value)", required,
+        name="role", onchange="toggleBranchField(this.value)",
         class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400"
       )
         option(value="" disabled selected hidden)= user ? user.role : 'Select Role'
@@ -59,11 +59,11 @@ block content
       label(for="branch", class="block mb-1") Branch
       select#branch.form-field(
         name="branch",
-        class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400"
+        class=    "bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400"
       )
         option(value="" disabled selected hidden)= user ? user.branch : 'Select Branch'
-        option(value="maganjo", selected=user && user.branch === 'maganjo') Maganjo
-        option(value="matugga", selected=user && user.branch === 'matugga') Matugga
+        option(value="maganjo", selected=user && user.branch === 'maganjo') maganjo
+        option(value="matugga", selected=user && user.branch === 'matugga') matugga
       span#branchError.hidden.text-red-400.text-xs
 
     button(
@@ -82,4 +82,4 @@ block content
       branchField.style.display = role === 'director' ? 'none' : 'block';
     }
 
-  script(src="/js/signupValidation.js")
+  script(src="/js/signup.js")

@@ -4,56 +4,57 @@ const Credit = require('../models/Credit');
 const Produce = require('../models/Produce');
 const connectEnsureLogin = require('connect-ensure-login');
 
-// Middleware to get user's branch from session (ensure lowercase)
+// Middleware to get user's branch
 function getUserBranch(req) {
-    return (req.session.user?.branch || 'Matugga').toLowerCase(); // Default to Matugga and ensure lowercase
+    return (req.session.user?.branch || 'Matugga').toLowerCase();
 }
 
-// Combine first and last name from session for agent name
+// Get full name
 function getAgentName(req) {
     return `${req.session.user.fname} ${req.session.user.lname}`;
 }
 
-// Render credit form (Both sales agents and managers can access this form)
+// Render form
 router.get('/addCreditor', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
     const branch = getUserBranch(req);
     const agentName = getAgentName(req);
-
     res.render("credit", { branch, agentName });
 });
 
+// Add credit + adjust stock
 router.post('/addCreditor', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
     try {
-      const branch = getUserBranch(req);
-      const agentName = getAgentName(req);
-  
-      console.log("Received credit form data:", req.body);
-  
-      const credit = new Credit({
-        ...req.body,
-        agentName,
-        branch
-      });
-  
-      console.log("Saving credit entry:", credit);
-      await credit.save();
-  
-      console.log("Credit saved successfully!");
-      res.redirect('/addCreditor?success=1');
+        const branch = getUserBranch(req);
+        const agentName = getAgentName(req);
+
+        const credit = new Credit({
+            ...req.body,
+            agentName,
+            branch
+        });
+
+        // Reduce stock in Produce
+        const produce = await Produce.findOne({ produceName: req.body.productName, branch });
+        if (produce) {
+            produce.tonnage -= parseFloat(req.body.tonnage);
+            await produce.save();
+        }
+
+        await credit.save();
+        res.redirect('/addCreditor?success=1');
     } catch (error) {
-      console.error("Error saving credit entry:", error);
-      res.status(500).render("credit", {
-        branch: getUserBranch(req),
-        agentName: getAgentName(req),
-        error: 'Error submitting credit form. Please try again later.'
-      });
+        console.error("Error saving credit entry:", error);
+        res.status(500).render("credit", {
+            branch: getUserBranch(req),
+            agentName: getAgentName(req),
+            error: 'Error submitting credit form. Please try again later.'
+        });
     }
-  });
-  
-// View credit entries for the user's branch
+});
+
+// View credits
 router.get('/viewCredits', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
     const branch = getUserBranch(req);
-
     try {
         const credits = await Credit.find({ branch }).sort({ createdAt: -1 });
         res.render('creditList', { credits, branch });
@@ -63,11 +64,9 @@ router.get('/viewCredits', connectEnsureLogin.ensureLoggedIn(), async (req, res)
     }
 });
 
-// Edit credit entry (Only managers)
+// Edit credit (Only managers)
 router.get('/editCredit/:id', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-    if (req.session.user.role !== 'manager') {
-        return res.redirect('/');
-    }
+    if (req.session.user.role !== 'manager') return res.redirect('/');
 
     try {
         const credit = await Credit.findById(req.params.id);
@@ -83,13 +82,30 @@ router.get('/editCredit/:id', connectEnsureLogin.ensureLoggedIn(), async (req, r
     }
 });
 
-// Update credit (Only managers)
+// Update credit + restore old stock + subtract new
 router.post('/editCredit/:id', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-    if (req.session.user.role !== 'manager') {
-        return res.redirect('/');
-    }
+    if (req.session.user.role !== 'manager') return res.redirect('/');
 
     try {
+        const existing = await Credit.findById(req.params.id);
+        const branch = getUserBranch(req);
+        const newTonnage = parseFloat(req.body.tonnage);
+        const productName = req.body.productName;
+
+        // Restore old tonnage
+        const produce = await Produce.findOne({ produceName: existing.productName, branch });
+        if (produce) {
+            produce.tonnage += parseFloat(existing.tonnage);
+            await produce.save();
+        }
+
+        // Subtract new tonnage
+        const updatedProduce = await Produce.findOne({ produceName: productName, branch });
+        if (updatedProduce) {
+            updatedProduce.tonnage -= newTonnage;
+            await updatedProduce.save();
+        }
+
         await Credit.findByIdAndUpdate(req.params.id, req.body);
         res.redirect('/viewCredits');
     } catch (error) {
@@ -98,14 +114,23 @@ router.post('/editCredit/:id', connectEnsureLogin.ensureLoggedIn(), async (req, 
     }
 });
 
-// Delete credit (Only managers)
+// Delete credit + restore stock
 router.post('/deleteCredit/:id', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-    if (req.session.user.role !== 'manager') {
-        return res.redirect('/');
-    }
+    if (req.session.user.role !== 'manager') return res.redirect('/');
 
     try {
-        await Credit.findByIdAndDelete(req.params.id);
+        const credit = await Credit.findById(req.params.id);
+        const branch = getUserBranch(req);
+
+        if (credit) {
+            const produce = await Produce.findOne({ produceName: credit.productName, branch });
+            if (produce) {
+                produce.tonnage += parseFloat(credit.tonnage);
+                await produce.save();
+            }
+            await credit.deleteOne();
+        }
+
         res.redirect('/viewCredits');
     } catch (error) {
         console.error(error);
@@ -113,23 +138,17 @@ router.post('/deleteCredit/:id', connectEnsureLogin.ensureLoggedIn(), async (req
     }
 });
 
-// NEW ROUTE: Get salePrice and tonnage for a produce from produces collection
+// Get produce info
 router.get('/getProduceInfo', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
     const { produceName } = req.query;
-    const rawBranch = req.session.branch || 'Matugga';
-    const branch = rawBranch.toLowerCase(); // Normalize to lowercase
-
-    console.log('Received query:', { produceName, branch });
+    const branch = getUserBranch(req);
 
     try {
         const produce = await Produce.findOne({ produceName, branch }).sort({ createdAt: -1 });
 
-        console.log('MongoDB query result:', produce);
-
         if (!produce) {
-            console.warn(`Produce not found for produceName: ${produceName} and branch: ${branch}`);
             return res.status(404).json({ error: 'Produce not found' });
-        } 
+        }
 
         res.json({ salePrice: produce.salePrice, tonnage: produce.tonnage });
     } catch (err) {
@@ -138,5 +157,4 @@ router.get('/getProduceInfo', connectEnsureLogin.ensureLoggedIn(), async (req, r
     }
 });
 
-  
 module.exports = router;
