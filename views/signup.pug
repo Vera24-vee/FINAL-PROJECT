@@ -50,7 +50,7 @@ block content
         class="bg-transparent border-b border-white w-full py-1 text-black focus:outline-none focus:ring-1 focus:ring-cyan-400"
       )
         option(value="" disabled selected hidden)= user ? user.role : 'Select Role'
-        option(value="director", selected=user && user.role === 'director') Director
+        //- option(value="director", selected=user && user.role === 'director') Director
         option(value="manager", selected=user && user.role === 'manager') Manager
         option(value="sales-agent", selected=user && user.role === 'sales-agent') Sales Agent
       span#roleError.hidden.text-red-400.text-xs

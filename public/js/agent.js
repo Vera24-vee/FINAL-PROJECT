@@ -18,14 +18,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
   
         // Update Total Sales Today
-        console.log('Total Revenue:', data.totalRevenue); // Debugging
+        console.log('Total Revenue:', data.totalRevenue); 
         updateElement('total-sales', data.totalRevenue, 'UGX', '0');
   
         // Update Credit Balance
-        console.log('Credit Balance:', data.creditBalance); // Debugging
+        console.log('Credit Balance:', data.creditBalance); 
         updateElement('credit-balance', data.creditBalance, 'UGX', '0');  
         // Update Pending Orders (fallback to 0 if not provided)
-        console.log('Pending Orders:', data.pendingOrders); // Debugging
+        console.log('Pending Orders:', data.pendingOrders); 
         updateElement('pending-orders', data.pendingOrders || 0, '', '0');
   
         // Draw Sales Trend Chart
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     if (value !== undefined && value !== null) {
-      console.log(`Updating ${elementId} with value: ${value}`); // Debugging
+      console.log(`Updating ${elementId} with value: ${value}`); 
       element.textContent = `${prefix} ${value.toLocaleString()}`;
     } else {
       console.warn(`Value for ${elementId} is undefined or null. Using fallback: ${fallback}`);
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Function to draw the Stock Overview Chart
   function drawStockOverviewChart(stockData) {
     const labels = stockData.map(item => item._id); // Product names
-    const values = stockData.map(item => item.totalStock); // Stock quantities
+    const values = stockData.map(item => item.totalAddedStock); // Stock quantities
   
     const ctx = document.getElementById('stockPie').getContext('2d');
     new Chart(ctx, {
