@@ -390,7 +390,11 @@ router.get(
 
     try {
       let users;
-      if (role.toLowerCase() === "director") {
+      // Allow superuser to see all users
+      if (
+        currentUser.email === SUPERUSER_EMAIL ||
+        role.toLowerCase() === "director"
+      ) {
         users = await Signup.find({});
       } else {
         users = await Signup.find({ branch });
