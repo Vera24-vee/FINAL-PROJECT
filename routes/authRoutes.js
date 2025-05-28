@@ -390,33 +390,33 @@ router.get("/logout", (req, res) => {
   }
 });
 
-router.get(
-  "/userTable",
-  connectEnsureLogin.ensureLoggedIn(),
-  async (req, res) => {
-    const currentUser = req.session.user;
-    const branch = currentUser.branch;
-    const role = currentUser.role;
+// GET User Table (Modified to handle superuser access)
+router.get("/userTable", async (req, res) => {
+  const currentUser = req.session.user;
 
-    try {
-      let users;
-      // Allow superuser to see all users
-      if (
-        currentUser.email === SUPERUSER_EMAIL ||
-        role.toLowerCase() === "director"
-      ) {
-        users = await Signup.find({});
-      } else {
-        users = await Signup.find({ branch });
-      }
-
-      res.render("usersList", { users });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("Error fetching users entries");
-    }
+  // Check if user is logged in
+  if (!currentUser) {
+    return res.redirect("/login");
   }
-);
+
+  try {
+    let users;
+    // Allow superuser to see all users
+    if (
+      currentUser.email === SUPERUSER_EMAIL ||
+      currentUser.role?.toLowerCase() === "director"
+    ) {
+      users = await Signup.find({});
+    } else {
+      users = await Signup.find({ branch: currentUser.branch });
+    }
+
+    res.render("usersList", { users });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).send("Error fetching users entries");
+  }
+});
 
 // Add a new route to check database status (for debugging)
 router.get("/check-db", async (req, res) => {
