@@ -3,6 +3,7 @@ const router = express.Router();
 const connectEnsureLogin = require("connect-ensure-login");
 const Signup = require("../models/Signup");
 const passport = require("passport");
+const mongoose = require("mongoose");
 
 // SUPERUSER DETAILS
 const SUPERUSER_EMAIL = "vero@gmail.com";
@@ -17,6 +18,44 @@ const SUPERUSER = {
     return this[key];
   },
 };
+
+// Add this function to check database connection and users
+async function checkDatabaseStatus() {
+  try {
+    const dbState = mongoose.connection.readyState;
+    console.log("Database connection state:", {
+      state: dbState,
+      meaning: {
+        0: "disconnected",
+        1: "connected",
+        2: "connecting",
+        3: "disconnecting",
+      }[dbState],
+    });
+
+    // Get all users (excluding sensitive data)
+    const users = await Signup.find({}, "email role branch");
+    console.log(
+      "Available users in database:",
+      users.map((u) => ({
+        email: u.email,
+        role: u.role,
+        branch: u.branch,
+      }))
+    );
+
+    return {
+      connected: dbState === 1,
+      userCount: users.length,
+    };
+  } catch (error) {
+    console.error("Database check error:", error);
+    return {
+      connected: false,
+      error: error.message,
+    };
+  }
+}
 
 // GET Signup Page (Only for superuser, manager, or director, no login required for superuser)
 router.get("/signup", (req, res) => {
@@ -190,6 +229,11 @@ router.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
     console.log("Login attempt for email:", email);
+    console.log("Environment:", process.env.NODE_ENV);
+
+    // Check database status
+    const dbStatus = await checkDatabaseStatus();
+    console.log("Database status:", dbStatus);
 
     // Input validation
     if (!email || !password) {
@@ -203,7 +247,8 @@ router.post("/login", async (req, res, next) => {
       email,
       exists: !!userExists,
       role: userExists?.role,
-      branch: userExists?.branch
+      branch: userExists?.branch,
+      database: mongoose.connection.name,
     });
 
     // Superuser login handling
@@ -245,16 +290,16 @@ router.post("/login", async (req, res, next) => {
 
         if (!user) {
           console.log("Login attempt failed for email:", email, "Info:", info);
-          return res.render("login", { 
+          return res.render("login", {
             error: "Invalid email or password",
-            email: email // Pass email back to form for better UX
+            email: email, // Pass email back to form for better UX
           });
         }
 
         console.log("User found, attempting login:", {
           email: user.email,
           role: user.role,
-          branch: user.branch
+          branch: user.branch,
         });
 
         req.login(user, function (err) {
@@ -262,7 +307,7 @@ router.post("/login", async (req, res, next) => {
             console.error("Session login error:", err);
             return res.render("login", {
               error: "Failed to create session. Please try again.",
-              email: email
+              email: email,
             });
           }
 
@@ -275,7 +320,7 @@ router.post("/login", async (req, res, next) => {
 
             console.log("User role and branch:", {
               role: lowerRole,
-              branch: lowerBranch
+              branch: lowerBranch,
             });
 
             if (!lowerRole) {
@@ -288,7 +333,7 @@ router.post("/login", async (req, res, next) => {
                 console.error("Error saving user session:", err);
                 return res.render("login", {
                   error: "Session error. Please try again.",
-                  email: email
+                  email: email,
                 });
               }
 
@@ -310,7 +355,7 @@ router.post("/login", async (req, res, next) => {
             console.error("Role-based redirect error:", error);
             return res.render("login", {
               error: "Error processing user role. Please contact support.",
-              email: email
+              email: email,
             });
           }
         });
@@ -320,7 +365,7 @@ router.post("/login", async (req, res, next) => {
     console.error("Login route error:", error);
     res.render("login", {
       error: "An unexpected error occurred. Please try again.",
-      email: req.body.email
+      email: req.body.email,
     });
   }
 });
@@ -334,6 +379,7 @@ router.get("/logout", (req, res) => {
     });
   }
 });
+
 router.get(
   "/userTable",
   connectEnsureLogin.ensureLoggedIn(),
@@ -357,5 +403,15 @@ router.get(
     }
   }
 );
+
+// Add a new route to check database status (for debugging)
+router.get("/check-db", async (req, res) => {
+  try {
+    const status = await checkDatabaseStatus();
+    res.json(status);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;
