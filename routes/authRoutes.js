@@ -189,6 +189,7 @@ router.get("/login", (req, res) => {
 router.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    console.log("Login attempt for email:", email);
 
     // Input validation
     if (!email || !password) {
@@ -196,8 +197,18 @@ router.post("/login", async (req, res, next) => {
       return res.render("login", { error: "Email and password are required" });
     }
 
+    // Check if user exists before authentication
+    const userExists = await Signup.findOne({ email });
+    console.log("User exists check:", {
+      email,
+      exists: !!userExists,
+      role: userExists?.role,
+      branch: userExists?.branch
+    });
+
     // Superuser login handling
     if (email === SUPERUSER_EMAIL && password === SUPERUSER_PASSWORD) {
+      console.log("Superuser login attempt");
       req.login(SUPERUSER, function (err) {
         if (err) {
           console.error("Superuser login error:", err);
@@ -205,8 +216,18 @@ router.post("/login", async (req, res, next) => {
             error: "Login failed. Please try again.",
           });
         }
+        console.log("Superuser login successful");
         req.session.user = SUPERUSER;
-        return res.redirect("/directorDash");
+        req.session.save((err) => {
+          if (err) {
+            console.error("Error saving superuser session:", err);
+            return res.render("login", {
+              error: "Session error. Please try again.",
+            });
+          }
+          console.log("Superuser session saved successfully");
+          return res.redirect("/directorDash");
+        });
       });
       return;
     }
@@ -223,44 +244,73 @@ router.post("/login", async (req, res, next) => {
         }
 
         if (!user) {
-          console.log("Login attempt failed for email:", email);
-          return res.render("login", { error: "Invalid email or password" });
+          console.log("Login attempt failed for email:", email, "Info:", info);
+          return res.render("login", { 
+            error: "Invalid email or password",
+            email: email // Pass email back to form for better UX
+          });
         }
+
+        console.log("User found, attempting login:", {
+          email: user.email,
+          role: user.role,
+          branch: user.branch
+        });
 
         req.login(user, function (err) {
           if (err) {
             console.error("Session login error:", err);
             return res.render("login", {
               error: "Failed to create session. Please try again.",
+              email: email
             });
           }
 
           try {
+            console.log("Setting user session");
             req.session.user = user;
             const { role, branch } = user;
             const lowerRole = role?.toLowerCase();
             const lowerBranch = branch?.toLowerCase();
 
+            console.log("User role and branch:", {
+              role: lowerRole,
+              branch: lowerBranch
+            });
+
             if (!lowerRole) {
               throw new Error("User role is missing");
             }
 
-            if (lowerRole === "manager" || lowerRole === "sales-agent") {
-              if (!lowerBranch) {
-                throw new Error(`Branch missing for ${lowerRole}`);
+            // Save session before redirect
+            req.session.save((err) => {
+              if (err) {
+                console.error("Error saving user session:", err);
+                return res.render("login", {
+                  error: "Session error. Please try again.",
+                  email: email
+                });
               }
-              return res.redirect(`/${lowerRole}Dash/${lowerBranch}`);
-            }
 
-            if (lowerRole === "director") {
-              return res.redirect("/directorDash");
-            }
+              console.log("Session saved successfully, redirecting...");
+              if (lowerRole === "manager" || lowerRole === "sales-agent") {
+                if (!lowerBranch) {
+                  throw new Error(`Branch missing for ${lowerRole}`);
+                }
+                return res.redirect(`/${lowerRole}Dash/${lowerBranch}`);
+              }
 
-            throw new Error(`Unknown role: ${lowerRole}`);
+              if (lowerRole === "director") {
+                return res.redirect("/directorDash");
+              }
+
+              throw new Error(`Unknown role: ${lowerRole}`);
+            });
           } catch (error) {
             console.error("Role-based redirect error:", error);
             return res.render("login", {
               error: "Error processing user role. Please contact support.",
+              email: email
             });
           }
         });
@@ -270,6 +320,7 @@ router.post("/login", async (req, res, next) => {
     console.error("Login route error:", error);
     res.render("login", {
       error: "An unexpected error occurred. Please try again.",
+      email: req.body.email
     });
   }
 });
