@@ -185,8 +185,38 @@ app.use(passport.session());
 
 // passport configs
 passport.use(Signup.createStrategy());
-passport.serializeUser(Signup.serializeUser());
-passport.deserializeUser(Signup.deserializeUser());
+
+// Custom serialization to handle both regular users and superuser
+passport.serializeUser((user, done) => {
+  // For superuser, we'll use the email as the key
+  if (user.email === process.env.SUPERUSER_EMAIL) {
+    done(null, { type: "superuser", email: user.email });
+  } else {
+    // For regular users, use the default serialization
+    Signup.serializeUser()(user, done);
+  }
+});
+
+// Custom deserialization to handle both regular users and superuser
+passport.deserializeUser(async (id, done) => {
+  try {
+    // If it's a superuser session
+    if (typeof id === "object" && id.type === "superuser") {
+      const superuser = {
+        _id: process.env.SUPERUSER_ID || "superuser123",
+        fname: process.env.SUPERUSER_FNAME || "Admin",
+        lname: process.env.SUPERUSER_LNAME || "User",
+        email: process.env.SUPERUSER_EMAIL,
+        role: "superuser",
+      };
+      return done(null, superuser);
+    }
+    // For regular users, use the default deserialization
+    Signup.deserializeUser()(id, done);
+  } catch (error) {
+    done(error);
+  }
+});
 
 //5. routes
 app.use("/", produceRoutes);
