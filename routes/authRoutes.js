@@ -5,19 +5,29 @@ const Signup = require("../models/Signup");
 const passport = require("passport");
 const mongoose = require("mongoose");
 
-// SUPERUSER DETAILS
-const SUPERUSER_EMAIL = "vero@gmail.com";
-const SUPERUSER_PASSWORD = "12345";
+// SUPERUSER DETAILS - Using environment variables
+const SUPERUSER_EMAIL = process.env.SUPERUSER_EMAIL;
+const SUPERUSER_PASSWORD = process.env.SUPERUSER_PASSWORD;
 const SUPERUSER = {
-  _id: "superuser123",
-  fname: "Kabwaga",
-  lname: "Veronica",
+  _id: process.env.SUPERUSER_ID || "superuser123",
+  fname: process.env.SUPERUSER_FNAME || "Admin",
+  lname: process.env.SUPERUSER_LNAME || "User",
   email: SUPERUSER_EMAIL,
-  role: "superuser", // Explicitly defining superuser role
+  role: "superuser",
   get: function (key) {
     return this[key];
   },
 };
+
+// Add validation for required environment variables
+if (!SUPERUSER_EMAIL || !SUPERUSER_PASSWORD) {
+  console.error(
+    "WARNING: Superuser credentials not set in environment variables!"
+  );
+  console.error(
+    "Please set SUPERUSER_EMAIL and SUPERUSER_PASSWORD in your environment."
+  );
+}
 
 // Add this function to check database connection and users
 async function checkDatabaseStatus() {
