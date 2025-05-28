@@ -15,7 +15,7 @@ const SUPERUSER = {
   role: "superuser", // Explicitly defining superuser role
   get: function (key) {
     return this[key];
-  }
+  },
 };
 
 // GET Signup Page (Only for superuser, manager, or director, no login required for superuser)
@@ -24,28 +24,36 @@ router.get("/signup", (req, res) => {
 
   // Allow superuser to access signup page even if not logged in
   if (
-    currentUser && (currentUser.email === SUPERUSER_EMAIL || currentUser.role === "manager" || currentUser.role === "director")
+    currentUser &&
+    (currentUser.email === SUPERUSER_EMAIL ||
+      currentUser.role === "manager" ||
+      currentUser.role === "director")
   ) {
-    const branchFromSession = currentUser.role === "manager" ? currentUser.branch : null;
+    const branchFromSession =
+      currentUser.role === "manager" ? currentUser.branch : null;
     res.render("signup", {
       editing: false,
       user: null,
       branchFromSession,
       error: null,
-      currentUser
+      currentUser,
     });
   } else {
-    res.status(403).send("Access denied. Only superusers, managers, or directors can access this page.");
+    res
+      .status(403)
+      .send(
+        "Access denied. Only superusers, managers, or directors can access this page."
+      );
   }
 });
 
 // POST Signup (Create New User)
-router.post("/signup",  async (req, res) => {
+router.post("/signup", async (req, res) => {
   const currentUser = req.session.user;
 
   if (
     currentUser.email === SUPERUSER_EMAIL || // Superuser can add any user
-    currentUser.role === "manager" || 
+    currentUser.role === "manager" ||
     currentUser.role === "director"
   ) {
     try {
@@ -56,7 +64,7 @@ router.post("/signup",  async (req, res) => {
           user: null,
           branchFromSession: currentUser.branch,
           error: "Email already in use",
-          currentUser
+          currentUser,
         });
       }
 
@@ -83,77 +91,95 @@ router.post("/signup",  async (req, res) => {
         user: null,
         branchFromSession: currentUser.branch,
         error: "There was an error during signup",
-        currentUser
+        currentUser,
       });
     }
   } else {
-    return res.status(403).send("Access denied. Only superusers, managers, or directors can add users.");
+    return res
+      .status(403)
+      .send(
+        "Access denied. Only superusers, managers, or directors can add users."
+      );
   }
 });
 
 // GET Edit User (Requires login)
-router.get("/editUser/:id", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-  const currentUser = req.session.user;
+router.get(
+  "/editUser/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (req, res) => {
+    const currentUser = req.session.user;
 
-  if (currentUser.role !== "manager" && currentUser.role !== "director") {
-    return res.status(403).send("Access denied.");
-  }
-
-  try {
-    const user = await Signup.findById(req.params.id);
-    if (!user) return res.redirect("/userTable");
-
-    res.render("signup", {
-      editing: true,
-      user,
-      branchFromSession: currentUser.branch,
-      error: null,
-      currentUser
-    });
-  } catch (error) {
-    console.error("Error loading user:", error);
-    res.redirect("/userTable");
-  }
-});
-
-// POST Edit User (Requires login)
-router.post("/editUser/:id", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-  const currentUser = req.session.user;
-
-  if (currentUser.role !== "manager" && currentUser.role !== "director") {
-    return res.status(403).send("Access denied.");
-  }
-
-  try {
-    const updateData = { ...req.body };
-    if (currentUser.role === "manager") {
-      updateData.branch = currentUser.branch;
+    if (currentUser.role !== "manager" && currentUser.role !== "director") {
+      return res.status(403).send("Access denied.");
     }
 
-    await Signup.findByIdAndUpdate(req.params.id, updateData);
-    res.redirect("/userTable");
-  } catch (error) {
-    console.error("Error updating user:", error);
-    res.redirect("/userTable");
+    try {
+      const user = await Signup.findById(req.params.id);
+      if (!user) return res.redirect("/userTable");
+
+      res.render("signup", {
+        editing: true,
+        user,
+        branchFromSession: currentUser.branch,
+        error: null,
+        currentUser,
+      });
+    } catch (error) {
+      console.error("Error loading user:", error);
+      res.redirect("/userTable");
+    }
   }
-});
+);
+
+// POST Edit User (Requires login)
+router.post(
+  "/editUser/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (req, res) => {
+    const currentUser = req.session.user;
+
+    if (currentUser.role !== "manager" && currentUser.role !== "director") {
+      return res.status(403).send("Access denied.");
+    }
+
+    try {
+      const updateData = { ...req.body };
+      if (currentUser.role === "manager") {
+        updateData.branch = currentUser.branch;
+      }
+
+      await Signup.findByIdAndUpdate(req.params.id, updateData);
+      res.redirect("/userTable");
+    } catch (error) {
+      console.error("Error updating user:", error);
+      res.redirect("/userTable");
+    }
+  }
+);
 
 // DELETE User (Requires login and role check)
-router.post("/deleteUser/:id", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-  const currentUser = req.session.user;
+router.post(
+  "/deleteUser/:id",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (req, res) => {
+    const currentUser = req.session.user;
 
-  if (currentUser.role !== "director") {
-    return res.status(403).send("Access denied. Only directors can delete users.");
-  }
+    if (currentUser.role !== "director") {
+      return res
+        .status(403)
+        .send("Access denied. Only directors can delete users.");
+    }
 
-  try {
-    await Signup.findByIdAndDelete(req.params.id);
-    res.redirect("/userTable");
-  } catch (error) {
-    console.error("Error deleting user:", error);
-    res.redirect("/userTable");
+    try {
+      await Signup.findByIdAndDelete(req.params.id);
+      res.redirect("/userTable");
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      res.redirect("/userTable");
+    }
   }
-});
+);
 
 // LOGIN Route for Superuser and other users
 router.get("/login", (req, res) => {
@@ -161,47 +187,91 @@ router.get("/login", (req, res) => {
 });
 
 router.post("/login", async (req, res, next) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  // Superuser login handling
-  if (email === SUPERUSER_EMAIL && password === SUPERUSER_PASSWORD) {
-    req.login(SUPERUSER, function (err) {
-      if (err) return next(err);
-      req.session.user = SUPERUSER;
-      return res.redirect("/directorDash");
-    });
-    return;
-  }
+    // Input validation
+    if (!email || !password) {
+      console.log("Login attempt with missing credentials");
+      return res.render("login", { error: "Email and password are required" });
+    }
 
-  passport.authenticate("local", { failureRedirect: "/login" }, (err, user, info) => {
-    if (err) return next(err);
-    if (!user) return res.redirect("/login");
-
-    req.login(user, function (err) {
-      if (err) return next(err);
-      req.session.user = user;
-
-      const { role, branch } = user;
-      const lowerRole = role.toLowerCase();
-      const lowerBranch = branch ? branch.toLowerCase() : null;
-
-      if (lowerRole === "manager") {
-        if (!lowerBranch) return res.status(400).send("Branch missing for manager");
-        return res.redirect(`/managerDash/${lowerBranch}`);
-      }
-
-      if (lowerRole === "sales-agent") {
-        if (!lowerBranch) return res.status(400).send("Branch missing for sales agent");
-        return res.redirect(`/salesAgentDash/${lowerBranch}`);
-      }
-
-      if (lowerRole === "director") {
+    // Superuser login handling
+    if (email === SUPERUSER_EMAIL && password === SUPERUSER_PASSWORD) {
+      req.login(SUPERUSER, function (err) {
+        if (err) {
+          console.error("Superuser login error:", err);
+          return res.render("login", {
+            error: "Login failed. Please try again.",
+          });
+        }
+        req.session.user = SUPERUSER;
         return res.redirect("/directorDash");
-      }
+      });
+      return;
+    }
 
-      return res.send("Unknown role");
+    passport.authenticate(
+      "local",
+      { failureRedirect: "/login" },
+      (err, user, info) => {
+        if (err) {
+          console.error("Authentication error:", err);
+          return res.render("login", {
+            error: "An error occurred during login. Please try again.",
+          });
+        }
+
+        if (!user) {
+          console.log("Login attempt failed for email:", email);
+          return res.render("login", { error: "Invalid email or password" });
+        }
+
+        req.login(user, function (err) {
+          if (err) {
+            console.error("Session login error:", err);
+            return res.render("login", {
+              error: "Failed to create session. Please try again.",
+            });
+          }
+
+          try {
+            req.session.user = user;
+            const { role, branch } = user;
+            const lowerRole = role?.toLowerCase();
+            const lowerBranch = branch?.toLowerCase();
+
+            if (!lowerRole) {
+              throw new Error("User role is missing");
+            }
+
+            if (lowerRole === "manager" || lowerRole === "sales-agent") {
+              if (!lowerBranch) {
+                throw new Error(`Branch missing for ${lowerRole}`);
+              }
+              return res.redirect(`/${lowerRole}Dash/${lowerBranch}`);
+            }
+
+            if (lowerRole === "director") {
+              return res.redirect("/directorDash");
+            }
+
+            throw new Error(`Unknown role: ${lowerRole}`);
+          } catch (error) {
+            console.error("Role-based redirect error:", error);
+            return res.render("login", {
+              error: "Error processing user role. Please contact support.",
+            });
+          }
+        });
+      }
+    )(req, res, next);
+  } catch (error) {
+    console.error("Login route error:", error);
+    res.render("login", {
+      error: "An unexpected error occurred. Please try again.",
     });
-  })(req, res, next);
+  }
 });
 
 // LOGOUT Route
@@ -213,26 +283,28 @@ router.get("/logout", (req, res) => {
     });
   }
 });
-router.get("/userTable", connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-  const currentUser = req.session.user;
-  const branch = currentUser.branch;
-  const role = currentUser.role;
+router.get(
+  "/userTable",
+  connectEnsureLogin.ensureLoggedIn(),
+  async (req, res) => {
+    const currentUser = req.session.user;
+    const branch = currentUser.branch;
+    const role = currentUser.role;
 
-  try {
-    let users;
-    if (role.toLowerCase() === "director") {
-      users = await Signup.find({});
-    } else {
-      users = await Signup.find({ branch });
+    try {
+      let users;
+      if (role.toLowerCase() === "director") {
+        users = await Signup.find({});
+      } else {
+        users = await Signup.find({ branch });
+      }
+
+      res.render("usersList", { users });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error fetching users entries");
     }
-
-    res.render("usersList", { users });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error fetching users entries");
   }
-});
-
-
+);
 
 module.exports = router;

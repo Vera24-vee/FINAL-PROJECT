@@ -1,0 +1,29 @@
+extends layout2
+
+block content
+  .flex-box.large(class="flex justify-center items-center h-full w-full")
+    .wrapper(
+      class="w-[450px] min-h-[300px] p-10 rounded-[15px] text-center bg-[rgba(0,31,63,0.9)] shadow-[0_0_35px_rgba(14,239,255,0.9)]"
+    )
+      //- Error icon
+      i(data-lucide="alert-circle" class="w-16 h-16 mx-auto text-red-400 mb-4")
+      
+      //- Error title
+      h1(class="text-[2em] text-white mb-4") Error
+      
+      //- Error message
+      p.error-message(class="text-[1.2em] text-cyan-400/80 mb-8")= message || 'An unexpected error occurred'
+      
+      //- Return home button
+      a(
+        href="/"
+        class="inline-block text-[1em] py-2 px-8 rounded-[25px] bg-cyan-400 text-white shadow-[0_0_10px_rgba(14,239,255,0.8)] hover:bg-white hover:text-black transition-all duration-300 cursor-pointer flex items-center gap-2 mx-auto"
+      )
+        i(data-lucide="home" class="w-5 h-5")
+        span Return to Home
+
+  //- Scripts
+  script(src="https://unpkg.com/lucide@latest")
+  script.
+    lucide.createIcons();
+    document.title = "Error - KGL"; 

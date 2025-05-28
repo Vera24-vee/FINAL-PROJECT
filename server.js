@@ -4,16 +4,37 @@ const path = require("path");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const moment = require("moment");
-const expressSession = require("express-session")({
-  secret: "secret",
-  resave: false,
-  saveUninitialized: false,
-});
-
 require("dotenv").config();
 
+// Determine if we're in production
+const isProduction = process.env.NODE_ENV === "production";
+
+// Session configuration based on environment
+const sessionConfig = {
+  secret: process.env.SESSION_SECRET || "dev-secret-key",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: isProduction, // Only use secure cookies in production
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: isProduction ? "none" : "lax", // Handle cross-site cookies in production
+  },
+};
+
+// If in production and using a session store (recommended for production)
+if (isProduction) {
+  const MongoStore = require("connect-mongo");
+  sessionConfig.store = MongoStore.create({
+    mongoUrl: process.env.DATABASE,
+    ttl: 24 * 60 * 60, // 1 day
+  });
+}
+
+const expressSession = require("express-session")(sessionConfig);
+
 //import users model
-const Signup = require("./models/Signup"); // Assuming Signup.js is in the models folder
+const Signup = require("./models/Signup");
 
 //2. instantiations
 const app = express();
@@ -32,48 +53,78 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const dashboardDataRoutes = require("./routes/dashboardDataRoutes");
 
 //3. configurations
-//setting up how it should connect(connecting to what is in your .env file)
 app.locals.moment = moment;
-mongoose.connect(process.env.DATABASE, {
+
+// MongoDB connection with environment-based configuration
+const dbOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  ssl: true,
-  tls: true,
-  tlsAllowInvalidCertificates: false,
-  tlsAllowInvalidHostnames: false,
-  retryWrites: true,
-  w: "majority",
+  ...(isProduction
+    ? {
+        ssl: true,
+        tls: true,
+        tlsAllowInvalidCertificates: true,
+        tlsAllowInvalidHostnames: true,
+        retryWrites: true,
+        w: "majority",
+      }
+    : {}),
+};
+
+// Function to connect to MongoDB with retry logic
+const connectWithRetry = async () => {
+  try {
+    await mongoose.connect(process.env.DATABASE, dbOptions);
+    console.log(
+      `MongoDB connected successfully in ${
+        isProduction ? "production" : "development"
+      } mode`
+    );
+  } catch (err) {
+    console.error("MongoDB connection error:", err);
+    console.log("Retrying connection in 5 seconds...");
+    setTimeout(connectWithRetry, 5000);
+  }
+};
+
+// Initial connection attempt
+connectWithRetry();
+
+// Add error handling middleware
+app.use((err, req, res, next) => {
+  console.error("Application error:", err);
+  res.status(500).render("error", {
+    message: isProduction
+      ? "An error occurred. Please try again later."
+      : err.message,
+  });
 });
 
-//testing the connection
-mongoose.connection
-  .on("open", () => {
-    console.log("Mongoose connection open");
-  })
-  .on("error", (err) => {
-    console.log(`Connection error: ${err.message}`);
-  });
-
 //set view engine to pug
-app.set("view engine", "pug"); //specify the view engine
-app.set("views", path.join(__dirname, "views")); //specifies the views directory
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
 
 //4.middleware
-app.use(express.static(path.join(__dirname, "public"))); //specifies a folder for static files
-app.use(express.urlencoded({ extended: true })); //this helps to parse data from the form
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // Add JSON parsing middleware
+
+// Trust proxy in production (needed for secure cookies behind a proxy)
+if (isProduction) {
+  app.set("trust proxy", 1);
+}
 
 // express session configs
 app.use(expressSession);
 app.use(passport.initialize());
 app.use(passport.session());
 
-// // passport configs
+// passport configs
 passport.use(Signup.createStrategy());
 passport.serializeUser(Signup.serializeUser());
 passport.deserializeUser(Signup.deserializeUser());
 
 //5. routes
-//using imported routes
 app.use("/", produceRoutes);
 app.use("/", salesRoutes);
 app.use("/", authRoutes);
@@ -87,12 +138,18 @@ app.use("/", dashboardRoutes);
 
 //redirection to unavailable page
 app.get("*", (req, res, next) => {
-  // if it's a request for a file (like .js, .css, etc), skip this
   if (req.originalUrl.includes(".") && !req.originalUrl.endsWith(".html")) {
     return next();
   }
-  res.status(404).send("Oops! Page not found");
+  res.status(404).render("error", {
+    message: "Oops! Page not found",
+  });
 });
 
 //6. bootstraping the server
-app.listen(PORT, () => console.log(`listening on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(
+    `Server running in ${isProduction ? "production" : "development"} mode`
+  );
+  console.log(`Listening on port ${PORT}`);
+});
