@@ -5,7 +5,7 @@ A full-stack inventory and sales management system for Karibu Groceries LTD. It 
 ## Technologies Used
 
 - Node.js, Express.js  
-- MongoDB, Mongoose  
+- MongoDB, Mongoose     
 - HTML, CSS, JavaScript  
 - Pug (Templating Engine)
 

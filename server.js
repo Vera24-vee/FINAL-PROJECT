@@ -3,7 +3,7 @@ const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
 const passport = require("passport");
-const moment =require("moment")
+const moment = require("moment");
 const expressSession = require("express-session")({
   secret: "secret",
   resave: false,
@@ -17,7 +17,7 @@ const Signup = require("./models/Signup"); // Assuming Signup.js is in the model
 
 //2. instantiations
 const app = express();
-const PORT = 3009;
+const PORT = process.env.PORT || 3009;
 
 //import routes
 const produceRoutes = require("./routes/produceRoutes");
@@ -28,9 +28,8 @@ const salesAgentRoutes = require("./routes/salesAgentRoutes");
 const directorRoutes = require("./routes/directorRoutes");
 const indexRoutes = require("./routes/indexRoutes");
 const creditRoutes = require("./routes/creditRoutes");
-const dashboardRoutes = require('./routes/dashboardRoutes');
-const dashboardDataRoutes = require('./routes/dashboardDataRoutes');
-
+const dashboardRoutes = require("./routes/dashboardRoutes");
+const dashboardDataRoutes = require("./routes/dashboardDataRoutes");
 
 //3. configurations
 //setting up how it should connect(connecting to what is in your .env file)
@@ -38,6 +37,12 @@ app.locals.moment = moment;
 mongoose.connect(process.env.DATABASE, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  ssl: true,
+  tls: true,
+  tlsAllowInvalidCertificates: false,
+  tlsAllowInvalidHostnames: false,
+  retryWrites: true,
+  w: "majority",
 });
 
 //testing the connection
@@ -80,12 +85,10 @@ app.use("/", creditRoutes);
 app.use("/api", dashboardDataRoutes);
 app.use("/", dashboardRoutes);
 
-
-
 //redirection to unavailable page
 app.get("*", (req, res, next) => {
   // if it's a request for a file (like .js, .css, etc), skip this
-  if (req.originalUrl.includes('.') && !req.originalUrl.endsWith('.html')) {
+  if (req.originalUrl.includes(".") && !req.originalUrl.endsWith(".html")) {
     return next();
   }
   res.status(404).send("Oops! Page not found");
@@ -93,4 +96,3 @@ app.get("*", (req, res, next) => {
 
 //6. bootstraping the server
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
-
